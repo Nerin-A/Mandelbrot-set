@@ -13,6 +13,7 @@ public:
 
 	int Width, Height;
 	HBRUSH BG_Brush;
+	HPEN White_Pen;
 
 private:
 	HBITMAP Bitmap;

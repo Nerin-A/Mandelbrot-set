@@ -12,9 +12,10 @@ AsFrame_DC::~AsFrame_DC()
 }
 //------------------------------------------------------------------------------------------------------------
 AsFrame_DC::AsFrame_DC()
-	: Width(0), Height(0), DC(0), Bitmap(0), BG_Brush(0)
+	: Width(0), Height(0), DC(0), Bitmap(0), BG_Brush(0), White_Pen(0)
 {
 	BG_Brush = CreateSolidBrush(RGB(0, 0, 0));
+	White_Pen = CreatePen(PS_SOLID, 0, RGB(255, 255, 255) );
 }
 //------------------------------------------------------------------------------------------------------------
 HDC AsFrame_DC::Get_DC(HWND hwnd, HDC hdc)
@@ -163,6 +164,8 @@ void On_Paint(HWND hwnd)
 	hdc = BeginPaint(hwnd, &ps);
 	frame_dc = DC.Get_DC(hwnd, hdc);
 	//Engine.Draw_Frame(frame_dc, ps.rcPaint);
+
+	
 
 	BitBlt(hdc, 0, 0, DC.Width, DC.Height, frame_dc, 0, 0, SRCCOPY);
 
