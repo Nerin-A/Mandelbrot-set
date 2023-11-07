@@ -16,7 +16,8 @@ public:
 	HDC Get_DC(HWND hwnd, HDC hdc);
 	char* Get_Buf();
 
-	int Width, Height;
+	//int Width, Height;
+	SSize Buf_Size;
 	HBRUSH BG_Brush;
 	HPEN White_Pen;
 

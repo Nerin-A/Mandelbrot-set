@@ -12,7 +12,7 @@ AsFrame_DC::~AsFrame_DC()
 }
 //------------------------------------------------------------------------------------------------------------
 AsFrame_DC::AsFrame_DC()
-	: Width(0), Height(0), DC(0), Bitmap(0), BG_Brush(0), White_Pen(0), Bitmap_Buffer(0)
+	: DC(0), Bitmap(0), BG_Brush(0), White_Pen(0), Bitmap_Buffer(0)
 {
 	BG_Brush = CreateSolidBrush(RGB(0, 0, 0));
 	White_Pen = CreatePen(PS_SOLID, 0, RGB(255, 255, 255) );
@@ -29,7 +29,7 @@ HDC AsFrame_DC::Get_DC(HWND hwnd, HDC hdc)
 	dc_width = rect.right - rect.left;
 	dc_height = rect.bottom - rect.top;
 
-	if (dc_width != Width && dc_height != Height)
+	if (dc_width != Buf_Size.Width && dc_height != Buf_Size.Height)
 	{
 		if (Bitmap != 0)
 			DeleteObject(Bitmap);
@@ -37,15 +37,15 @@ HDC AsFrame_DC::Get_DC(HWND hwnd, HDC hdc)
 		if (DC != 0)
 			DeleteObject(DC);
 
-		Width = dc_width;
-		Height = dc_height;
+		Buf_Size.Width = dc_width;
+		Buf_Size.Height = dc_height;
 
 		DC = CreateCompatibleDC(hdc);
 		//Bitmap = CreateCompatibleBitmap(hdc, Width, Height);
 
 		bitmap_info.bmiHeader.biSize = sizeof(BITMAPINFO);
-		bitmap_info.bmiHeader.biWidth = Width;
-		bitmap_info.bmiHeader.biHeight = Height;
+		bitmap_info.bmiHeader.biWidth = Buf_Size.Width;
+		bitmap_info.bmiHeader.biHeight = Buf_Size.Height;
 		bitmap_info.bmiHeader.biPlanes = 1;
 		bitmap_info.bmiHeader.biBitCount = 24;
 		bitmap_info.bmiHeader.biCompression = BI_RGB;
@@ -185,14 +185,14 @@ void On_Paint(HWND hwnd)
 
 	buf = DC.Get_Buf();
 
-	Asm_Draw(buf, );
+	Asm_Draw(buf, DC.Buf_Size);
 
 	SelectObject(frame_dc, DC.White_Pen);
 
 	MoveToEx(frame_dc, 100, 200, 0);
 	LineTo(frame_dc, 300, 400);
 
-	BitBlt(hdc, 0, 0, DC.Width, DC.Height, frame_dc, 0, 0, SRCCOPY);
+	BitBlt(hdc, 0, 0, DC.Buf_Size.Width, DC.Buf_Size.Height, frame_dc, 0, 0, SRCCOPY);
 
 	EndPaint(hwnd, &ps);
 }
