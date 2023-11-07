@@ -1,8 +1,63 @@
-﻿// Mandelbrot set.cpp : Defines the entry point for the application.
+﻿// Main.cpp : Defines the entry point for the application.
 //
 
 #include "framework.h"
 #include "Main.h"
+
+//AsFrame_DC
+//------------------------------------------------------------------------------------------------------------
+AsFrame_DC::~AsFrame_DC()
+{
+   if (Bitmap != 0)
+      DeleteObject(Bitmap);
+
+   if (DC != 0)
+      DeleteObject(DC);
+}
+//------------------------------------------------------------------------------------------------------------
+AsFrame_DC::AsFrame_DC()
+   : Width(0), Height(0), DC(0), Bitmap(0)
+{
+}
+//------------------------------------------------------------------------------------------------------------
+HDC AsFrame_DC::Get_DC(HWND hwnd, HDC hdc)
+{
+   int dc_width, dc_height;
+   RECT rect;
+
+   GetClientRect(hwnd, &rect);
+
+   dc_width = rect.right - rect.left;
+   dc_height = rect.bottom - rect.top;
+
+   if (dc_width != Width && dc_height != Height)
+   {
+      if (Bitmap != 0)
+         DeleteObject(Bitmap);
+
+      if (DC != 0)
+         DeleteObject(DC);
+
+      Width = dc_width;
+      Height = dc_height;
+
+      DC = CreateCompatibleDC(hdc);
+      Bitmap = CreateCompatibleBitmap(hdc, Width, Height);
+      SelectObject(DC, Bitmap);
+
+      rect.right++;
+      rect.bottom++;
+
+      AsTools::Rect(DC, rect, AsConfig::BG_Color);
+   }
+
+   return DC;
+}
+//------------------------------------------------------------------------------------------------------------
+
+
+
+
 
 #define MAX_LOADSTRING 100
 
