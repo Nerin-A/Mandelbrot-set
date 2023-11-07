@@ -110,6 +110,21 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    return TRUE;
 }
+//------------------------------------------------------------------------------------------------------------
+void On_Paint(HWND hwnd)
+{
+   HDC hdc, frame_dc;
+   PAINTSTRUCT ps;
+
+   hdc = BeginPaint(hwnd, &ps);
+   frame_dc = DC.Get_DC(hwnd, hdc);
+   Engine.Draw_Frame(frame_dc, ps.rcPaint);
+
+   BitBlt(hdc, 0, 0, DC.Width, DC.Height, frame_dc, 0, 0, SRCCOPY);
+
+   EndPaint(hwnd, &ps);
+}
+//------------------------------------------------------------------------------------------------------------
 
 //
 //  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
@@ -144,10 +159,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     case WM_PAINT:
         {
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hWnd, &ps);
-            // TODO: Add any drawing code that uses hdc here...
-            EndPaint(hWnd, &ps);
+            On_Paint(hWnd);
         }
         break;
     case WM_DESTROY:
