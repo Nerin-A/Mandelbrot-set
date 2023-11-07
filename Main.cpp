@@ -42,9 +42,18 @@ HDC AsFrame_DC::Get_DC(HWND hwnd, HDC hdc)
 
 		DC = CreateCompatibleDC(hdc);
 		//Bitmap = CreateCompatibleBitmap(hdc, Width, Height);
+
+		bitmap_info.bmiHeader.biSize = sizeof(BITMAPINFO);
+		bitmap_info.bmiHeader.biWidth = Width;
+		bitmap_info.bmiHeader.biHeight = Height;
+		bitmap_info.bmiHeader.biPlanes = 1;
+		bitmap_info.bmiHeader.biBitCount = 24;
+		bitmap_info.bmiHeader.biCompression = BI_RGB;
+
 		Bitmap = CreateDIBSection(hdc, &bitmap_info, DIB_RGB_COLORS, (void**)&Bitmap_Buffer, NULL, NULL);
 
-		SelectObject(DC, Bitmap);
+		if (Bitmap != 0)
+			SelectObject(DC, Bitmap);
 
 		rect.right++;
 		rect.bottom++;
