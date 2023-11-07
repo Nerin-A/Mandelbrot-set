@@ -28,12 +28,12 @@ Asm_Draw_Line proc
 ; R9 = buffer_color
 ; Return = void;
 
-	; mov rdi, rcx
-	; mov eax, 0ffffffffh
-	; 
-	; mov rcx, 100
-	; 
-	; rep stosd 
+	mov rdi, rcx
+	mov eax, 0ffffffffh
+	
+	mov rcx, 100
+	
+	rep stosd 
 
 	ret
 
