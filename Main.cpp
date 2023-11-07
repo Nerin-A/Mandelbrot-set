@@ -14,7 +14,7 @@ AsFrame_DC::~AsFrame_DC()
 AsFrame_DC::AsFrame_DC()
 	: Width(0), Height(0), DC(0), Bitmap(0), BG_Brush(0)
 {
-	BG_Brush = CreateSolidBrush(RGB(0, 0, 255));
+	BG_Brush = CreateSolidBrush(RGB(0, 0, 0));
 }
 //------------------------------------------------------------------------------------------------------------
 HDC AsFrame_DC::Get_DC(HWND hwnd, HDC hdc)
@@ -130,20 +130,27 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 	return RegisterClassExW(&wcex);
 }
 //------------------------------------------------------------------------------------------------------------
-BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
+BOOL InitInstance(HINSTANCE instance, int cmd_show)
 {
-	hInst = hInstance; // Store instance handle in our global variable
+	RECT window_rect;
+	HWND hwnd;
 
-	HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-		CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+	hInst = instance;
 
-	if (!hWnd)
-	{
+	window_rect.left = 0;
+	window_rect.top = 0;
+	window_rect.right = 320 * 3;
+	window_rect.bottom = 200 * 3;
+
+	AdjustWindowRect(&window_rect, WS_OVERLAPPEDWINDOW - WS_THICKFRAME, TRUE);
+
+	hwnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW - WS_THICKFRAME, 0, 0, window_rect.right - window_rect.left, window_rect.bottom - window_rect.top, 0, 0, instance, 0);
+
+	if (hwnd == 0)
 		return FALSE;
-	}
 
-	ShowWindow(hWnd, nCmdShow);
-	UpdateWindow(hWnd);
+	ShowWindow(hwnd, cmd_show);
+	UpdateWindow(hwnd);
 
 	return TRUE;
 }
