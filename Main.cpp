@@ -187,7 +187,9 @@ void On_Paint(HWND hwnd)
 
 	buf = DC.Get_Buf();
 
-	Asm_Draw(buf, DC.Buf_Size);
+	// Asm_Draw(buf, DC.Buf_Size);
+	Asm_Draw_Line(buf, SSize(100, 200), SSize(400, 500), 0xffffffff);
+
 
 	SelectObject(frame_dc, DC.White_Pen);
 

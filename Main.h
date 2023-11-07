@@ -5,7 +5,9 @@
 //------------------------------------------------------------------------------------------------------------
 struct SSize
 {
-	unsigned short Width = 0, Height = 0;
+
+
+	unsigned short Width, Height;
 };
 //------------------------------------------------------------------------------------------------------------
 class AsFrame_DC
@@ -27,4 +29,5 @@ private:
 	char* Bitmap_Buffer;
 };
 //------------------------------------------------------------------------------------------------------------
-extern "C" void Asm_Draw(char *video_buffer, SSize size);
+//extern "C" void Asm_Draw(char* video_buffer, SSize size); 
+extern "C" void Asm_Draw_Line(char* video_buffer, SSize size);
