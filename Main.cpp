@@ -61,6 +61,7 @@ HDC AsFrame_DC::Get_DC(HWND hwnd, HDC hdc)
 #define MAX_LOADSTRING 100
 
 // Global Variables:
+AsFrame_DC DC;
 HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
@@ -155,7 +156,7 @@ void On_Paint(HWND hwnd)
 
 	hdc = BeginPaint(hwnd, &ps);
 	frame_dc = DC.Get_DC(hwnd, hdc);
-	Engine.Draw_Frame(frame_dc, ps.rcPaint);
+	//Engine.Draw_Frame(frame_dc, ps.rcPaint);
 
 	BitBlt(hdc, 0, 0, DC.Width, DC.Height, frame_dc, 0, 0, SRCCOPY);
 
