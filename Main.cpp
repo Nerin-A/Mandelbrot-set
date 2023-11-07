@@ -47,7 +47,7 @@ HDC AsFrame_DC::Get_DC(HWND hwnd, HDC hdc)
 		bitmap_info.bmiHeader.biWidth = Buf_Size.Width;
 		bitmap_info.bmiHeader.biHeight = Buf_Size.Height;
 		bitmap_info.bmiHeader.biPlanes = 1;
-		bitmap_info.bmiHeader.biBitCount = 24;
+		bitmap_info.bmiHeader.biBitCount = 32;
 		bitmap_info.bmiHeader.biCompression = BI_RGB;
 
 		Bitmap = CreateDIBSection(hdc, &bitmap_info, DIB_RGB_COLORS, (void**)&Bitmap_Buffer, NULL, NULL);
