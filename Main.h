@@ -31,4 +31,5 @@ private:
 };
 //------------------------------------------------------------------------------------------------------------
 //extern "C" void Asm_Draw(char* video_buffer, SSize size); 
-extern "C" void Asm_Draw_Line(char* video_buffer, SSize size);
+extern "C" void Asm_Draw_Line(char* video_buffer, SSize start_pos, SSize finish_pos, int color);
+//------------------------------------------------------------------------------------------------------------
