@@ -3,6 +3,7 @@
 #include "resource.h"
 #include "framework.h"
 //------------------------------------------------------------------------------------------------------------
+
 class AsFrame_DC
 {
 public:
@@ -19,4 +20,4 @@ private:
 	HDC DC;
 };
 //------------------------------------------------------------------------------------------------------------
-extern "C" void Asm_Draw();
+extern "C" void Asm_Draw(char *video_buffer, short width, short height);
