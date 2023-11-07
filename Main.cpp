@@ -1,8 +1,6 @@
 ﻿#include "Main.h"
 
 //AsFrame_DC
-HBRUSH AsFrame_DC::BG_Brush = (HBRUSH)(COLOR_WINDOW + 1);
-
 //------------------------------------------------------------------------------------------------------------
 AsFrame_DC::~AsFrame_DC()
 {
@@ -14,8 +12,9 @@ AsFrame_DC::~AsFrame_DC()
 }
 //------------------------------------------------------------------------------------------------------------
 AsFrame_DC::AsFrame_DC()
-	: Width(0), Height(0), DC(0), Bitmap(0)
+	: Width(0), Height(0), DC(0), Bitmap(0), BG_Brush(0)
 {
+	BG_Brush = CreateSolidBrush(RGB(0, 0, 255));
 }
 //------------------------------------------------------------------------------------------------------------
 HDC AsFrame_DC::Get_DC(HWND hwnd, HDC hdc)
@@ -123,7 +122,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 	wcex.hInstance = hInstance;
 	wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MANDELBROTSET));
 	wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
-	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+	wcex.hbrBackground = DC.BG_Brush;
 	wcex.lpszMenuName = MAKEINTRESOURCEW(IDC_MANDELBROTSET);
 	wcex.lpszClassName = szWindowClass;
 	wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));

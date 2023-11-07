@@ -12,8 +12,7 @@ public:
 	HDC Get_DC(HWND hwnd, HDC hdc);
 
 	int Width, Height;
-
-	static HBRUSH BG_Brush;
+	HBRUSH BG_Brush;
 
 private:
 	HBITMAP Bitmap;
