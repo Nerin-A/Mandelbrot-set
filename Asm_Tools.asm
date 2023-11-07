@@ -20,7 +20,7 @@ Asm_Draw proc
 Asm_Draw endp
 ;-------------------------------------------------------------------------------------------------------------
 Asm_Draw_Line proc
-; extern "C" void Asm_Draw_Line(char* video_buffer, SSize start_pos, SSize finish_pos, SBuf_Color buffer_color);
+; extern "C" void Asm_Draw_Line(char* video_buffer, SPoint start_pos, SPoint finish_pos, SBuf_Color buffer_color);
 ; Parameters
 ; RCX = char *video_buffer, 
 ; RDX = start_pos
