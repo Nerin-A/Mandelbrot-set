@@ -194,6 +194,7 @@ void On_Paint(HWND hwnd)
 	char* buf;
 	HDC hdc, frame_dc;
 	PAINTSTRUCT ps;
+	SBuf_Color buffer_color;
 
 	hdc = BeginPaint(hwnd, &ps);
 	frame_dc = DC.Get_DC(hwnd, hdc);
@@ -204,7 +205,11 @@ void On_Paint(HWND hwnd)
 	buf = DC.Get_Buf();
 
 	// Asm_Draw(buf, DC.Buf_Size);
-	Asm_Draw_Line(buf, SSize(100, 200), SSize(400, 500), 0xffffffff);
+
+	buffer_color.Buffer_Size = DC.Buf_Size;
+	buffer_color.Color = 0xffffffff;
+
+	Asm_Draw_Line(buf, SSize(100, 200), SSize(400, 500), buffer_color);
 
 
 	SelectObject(frame_dc, DC.White_Pen);

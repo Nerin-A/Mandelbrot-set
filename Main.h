@@ -11,6 +11,12 @@ struct SSize
 	unsigned short Width, Height;
 };
 //------------------------------------------------------------------------------------------------------------
+struct SBuf_Color
+{
+	SSize Buffer_Size;
+	unsigned int Color;
+};
+//------------------------------------------------------------------------------------------------------------
 class AsFrame_DC
 {
 public:
@@ -31,5 +37,5 @@ private:
 };
 //------------------------------------------------------------------------------------------------------------
 //extern "C" void Asm_Draw(char* video_buffer, SSize size); 
-extern "C" void Asm_Draw_Line(char* video_buffer, SSize start_pos, SSize finish_pos, int color);
+extern "C" void Asm_Draw_Line(char* video_buffer, SSize start_pos, SSize finish_pos, SBuf_Color buffer_color);
 //------------------------------------------------------------------------------------------------------------

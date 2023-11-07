@@ -1,6 +1,6 @@
 .code
 
-;------------------------------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------------------------------
 Asm_Draw proc
 ; extern "C" void Asm_Draw(char *video_buffer, SSize size);
 ; Parameters
@@ -18,14 +18,14 @@ Asm_Draw proc
 	ret
 
 Asm_Draw endp
-;------------------------------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------------------------------
 Asm_Draw_Line proc
-; extern "C" void Asm_Draw_Line(char* video_buffer, SSize start_pos, SSize finish_pos, int color);
+; extern "C" void Asm_Draw_Line(char* video_buffer, SSize start_pos, SSize finish_pos, SBuf_Color buffer_color);
 ; Parameters
 ; RCX = char *video_buffer, 
 ; RDX = start_pos
 ; R8 = finish_pos
-; R9 = color
+; R9 = buffer_color
 ; Return = void;
 
 	; mov rdi, rcx
@@ -38,6 +38,6 @@ Asm_Draw_Line proc
 	ret
 
 Asm_Draw_Line endp
-;------------------------------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------------------------------
 
 end
