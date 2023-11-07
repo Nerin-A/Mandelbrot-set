@@ -1,8 +1,8 @@
-// Mandelbrot set.cpp : Defines the entry point for the application.
+﻿// Mandelbrot set.cpp : Defines the entry point for the application.
 //
 
 #include "framework.h"
-#include "Mandelbrot set.h"
+#include "Main.h"
 
 #define MAX_LOADSTRING 100
 
