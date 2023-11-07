@@ -183,6 +183,8 @@ void On_Paint(HWND hwnd)
 	frame_dc = DC.Get_DC(hwnd, hdc);
 	//Engine.Draw_Frame(frame_dc, ps.rcPaint);
 
+	GdiFlush();
+
 	buf = DC.Get_Buf();
 
 	Asm_Draw(buf, DC.Buf_Size);
