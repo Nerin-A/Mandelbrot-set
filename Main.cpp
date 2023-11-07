@@ -12,7 +12,7 @@ AsFrame_DC::~AsFrame_DC()
 }
 //------------------------------------------------------------------------------------------------------------
 AsFrame_DC::AsFrame_DC()
-	: Width(0), Height(0), DC(0), Bitmap(0), BG_Brush(0), White_Pen(0)
+	: Width(0), Height(0), DC(0), Bitmap(0), BG_Brush(0), White_Pen(0), Bitmap_Buffer(0)
 {
 	BG_Brush = CreateSolidBrush(RGB(0, 0, 0));
 	White_Pen = CreatePen(PS_SOLID, 0, RGB(255, 255, 255) );
@@ -22,6 +22,7 @@ HDC AsFrame_DC::Get_DC(HWND hwnd, HDC hdc)
 {
 	int dc_width, dc_height;
 	RECT rect;
+	BITMAPINFO bitmap_info{};
 
 	GetClientRect(hwnd, &rect);
 
@@ -40,7 +41,9 @@ HDC AsFrame_DC::Get_DC(HWND hwnd, HDC hdc)
 		Height = dc_height;
 
 		DC = CreateCompatibleDC(hdc);
-		Bitmap = CreateCompatibleBitmap(hdc, Width, Height);
+		//Bitmap = CreateCompatibleBitmap(hdc, Width, Height);
+		Bitmap = CreateDIBSection(hdc, &bitmap_info, DIB_RGB_COLORS, (void**)&Bitmap_Buffer, NULL, NULL);
+
 		SelectObject(DC, Bitmap);
 
 		rect.right++;

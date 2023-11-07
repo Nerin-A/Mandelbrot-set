@@ -22,6 +22,7 @@ public:
 private:
 	HBITMAP Bitmap;
 	HDC DC;
+	char* Bitmap_Buffer;
 };
 //------------------------------------------------------------------------------------------------------------
 extern "C" void Asm_Draw(char *video_buffer, SSize size);
