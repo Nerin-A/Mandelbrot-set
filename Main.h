@@ -5,7 +5,8 @@
 //------------------------------------------------------------------------------------------------------------
 struct SSize
 {
-
+	SSize();
+	SSize(unsigned short width, unsigned short height);
 
 	unsigned short Width, Height;
 };
