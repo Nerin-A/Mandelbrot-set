@@ -1,5 +1,7 @@
 ﻿#include "Main.h"
 
+extern "C" void Asm_Test();
+
 //AsFrame_DC
 //------------------------------------------------------------------------------------------------------------
 AsFrame_DC::~AsFrame_DC()
@@ -164,6 +166,8 @@ void On_Paint(HWND hwnd)
 	hdc = BeginPaint(hwnd, &ps);
 	frame_dc = DC.Get_DC(hwnd, hdc);
 	//Engine.Draw_Frame(frame_dc, ps.rcPaint);
+
+	Asm_Test();
 
 	SelectObject(frame_dc, DC.White_Pen);
 
