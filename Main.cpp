@@ -1,6 +1,6 @@
 ﻿#include "Main.h"
 
-extern "C" void Asm_Test();
+extern "C" void Asm_Draw();
 
 //AsFrame_DC
 //------------------------------------------------------------------------------------------------------------
@@ -167,7 +167,7 @@ void On_Paint(HWND hwnd)
 	frame_dc = DC.Get_DC(hwnd, hdc);
 	//Engine.Draw_Frame(frame_dc, ps.rcPaint);
 
-	Asm_Test();
+	Asm_Draw();
 
 	SelectObject(frame_dc, DC.White_Pen);
 

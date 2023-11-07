@@ -1,10 +1,12 @@
 .code
 
-Asm_Test proc
-;extern "C" void Asm_Test();
+Asm_Draw proc
+; extern "C" void Asm_Draw();
+
+
 
 	ret
 
-Asm_Test endp
+Asm_Draw endp
 
 end
