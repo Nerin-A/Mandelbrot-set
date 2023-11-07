@@ -3,7 +3,11 @@
 #include "resource.h"
 #include "framework.h"
 //------------------------------------------------------------------------------------------------------------
-
+struct SSize
+{
+	unsigned short Width = 0, Height = 0;
+};
+//------------------------------------------------------------------------------------------------------------
 class AsFrame_DC
 {
 public:
@@ -20,4 +24,4 @@ private:
 	HDC DC;
 };
 //------------------------------------------------------------------------------------------------------------
-extern "C" void Asm_Draw(char *video_buffer, short width, short height);
+extern "C" void Asm_Draw(char *video_buffer, SSize size);

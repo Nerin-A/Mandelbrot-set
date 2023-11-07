@@ -1,8 +1,7 @@
 .code
 
 Asm_Draw proc
-; extern "C" void Asm_Draw();
-
+; extern "C" void Asm_Draw(char *video_buffer, SSize size);
 
 
 	ret
