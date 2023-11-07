@@ -165,7 +165,10 @@ void On_Paint(HWND hwnd)
 	frame_dc = DC.Get_DC(hwnd, hdc);
 	//Engine.Draw_Frame(frame_dc, ps.rcPaint);
 
-	
+	SelectObject(frame_dc, DC.White_Pen);
+
+	MoveToEx(frame_dc, 100, 200, 0);
+	LineTo(frame_dc, 300, 400);
 
 	BitBlt(hdc, 0, 0, DC.Width, DC.Height, frame_dc, 0, 0, SRCCOPY);
 
