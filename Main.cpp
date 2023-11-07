@@ -1,6 +1,8 @@
 ﻿#include "Main.h"
 
 //AsFrame_DC
+HBRUSH AsFrame_DC::BG_Brush = (HBRUSH)(COLOR_WINDOW + 1);
+
 //------------------------------------------------------------------------------------------------------------
 AsFrame_DC::~AsFrame_DC()
 {
@@ -44,7 +46,8 @@ HDC AsFrame_DC::Get_DC(HWND hwnd, HDC hdc)
 		rect.right++;
 		rect.bottom++;
 
-		AsTools::Rect(DC, rect, AsConfig::BG_Color);
+		SelectObject(DC, BG_Brush);
+		Rectangle(DC, rect.left, rect.top, rect.right, rect.bottom);	
 	}
 
 	return DC;

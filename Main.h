@@ -13,6 +13,8 @@ public:
 
 	int Width, Height;
 
+	static HBRUSH BG_Brush;
+
 private:
 	HBITMAP Bitmap;
 	HDC DC;
