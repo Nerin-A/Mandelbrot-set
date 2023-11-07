@@ -10,7 +10,9 @@ Asm_Draw proc
 	mov rdi, rcx
 	mov eax, 0ffffffffh
 
-	stosd 
+	mov rcx, 100
+
+	rep stosd 
 
 	ret
 
