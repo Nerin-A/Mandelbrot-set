@@ -14,6 +14,7 @@ public:
 	~AsFrame_DC();
 	AsFrame_DC();
 	HDC Get_DC(HWND hwnd, HDC hdc);
+	char* Get_Buf();
 
 	int Width, Height;
 	HBRUSH BG_Brush;

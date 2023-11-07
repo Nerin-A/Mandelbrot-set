@@ -65,6 +65,11 @@ HDC AsFrame_DC::Get_DC(HWND hwnd, HDC hdc)
 	return DC;
 }
 //------------------------------------------------------------------------------------------------------------
+char* AsFrame_DC::Get_Buf()
+{
+	return Bitmap_Buffer;
+}
+//------------------------------------------------------------------------------------------------------------
 
 
 
@@ -170,6 +175,7 @@ BOOL InitInstance(HINSTANCE instance, int cmd_show)
 //------------------------------------------------------------------------------------------------------------
 void On_Paint(HWND hwnd)
 {
+	char* buf;
 	HDC hdc, frame_dc;
 	PAINTSTRUCT ps;
 
@@ -177,7 +183,9 @@ void On_Paint(HWND hwnd)
 	frame_dc = DC.Get_DC(hwnd, hdc);
 	//Engine.Draw_Frame(frame_dc, ps.rcPaint);
 
-	Asm_Draw();
+	buf = DC.Get_Buf();
+
+	Asm_Draw(buf, );
 
 	SelectObject(frame_dc, DC.White_Pen);
 
