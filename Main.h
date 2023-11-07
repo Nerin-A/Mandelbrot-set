@@ -2,6 +2,14 @@
 
 #include "resource.h"
 #include "framework.h"
+//------------------------------------------------------------------------------------------------------------ 
+struct SPoint
+{
+	SPoint();
+	SPoint(unsigned short x, unsigned short y);
+
+	unsigned short X, Y;
+};
 //------------------------------------------------------------------------------------------------------------
 struct SSize
 {
@@ -37,5 +45,5 @@ private:
 };
 //------------------------------------------------------------------------------------------------------------
 //extern "C" void Asm_Draw(char* video_buffer, SSize size); 
-extern "C" void Asm_Draw_Line(char* video_buffer, SSize start_pos, SSize finish_pos, SBuf_Color buffer_color);
+extern "C" void Asm_Draw_Line(char* video_buffer, SPoint start_pos, SPoint finish_pos, SBuf_Color buffer_color);
 //------------------------------------------------------------------------------------------------------------

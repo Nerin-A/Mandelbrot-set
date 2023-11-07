@@ -1,5 +1,21 @@
 ﻿#include "Main.h"
 
+// SPoint
+//------------------------------------------------------------------------------------------------------------
+SPoint::SPoint()
+	: X(0), Y(0)
+{
+}
+//------------------------------------------------------------------------------------------------------------
+SPoint::SPoint(unsigned short x, unsigned short y)
+	: X(x), Y(y)
+{
+}
+//------------------------------------------------------------------------------------------------------------
+
+
+
+
 // SSize
 //------------------------------------------------------------------------------------------------------------
 SSize::SSize()
@@ -209,7 +225,7 @@ void On_Paint(HWND hwnd)
 	buffer_color.Buffer_Size = DC.Buf_Size;
 	buffer_color.Color = 0xffffffff;
 
-	Asm_Draw_Line(buf, SSize(100, 200), SSize(400, 500), buffer_color);
+	Asm_Draw_Line(buf, SPoint(100, 200), SPoint(400, 500), buffer_color);
 
 
 	SelectObject(frame_dc, DC.White_Pen);
