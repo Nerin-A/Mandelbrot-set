@@ -19,18 +19,15 @@ Asm_Draw proc
 
 Asm_Draw endp
 ;-------------------------------------------------------------------------------------------------------------
-Asm_Draw_Line proc
-; extern "C" void Asm_Draw_Line(char* video_buffer, SPoint start_pos, SPoint finish_pos, SBuf_Color buffer_color);
+Get_Address proc
+; Getting address in memory, corresponding to the coordinates X, Y
 ; Parameters
-; RCX = char *video_buffer, 
 ; RDX = start_pos
-; R8 = finish_pos
 ; R9 = buffer_color
-; Return = void;
-
+; R11 = char *video_buffer, 
+; Return = RDI = Address of the pixel
 	push rax
 	push rdx
-	push rdi
 	push r10
 
 	mov rdi, rcx
@@ -49,14 +46,40 @@ Asm_Draw_Line proc
 
 
 	add rdi, rax
+
+	pop r10
+	pop rdx
+	pop rax
+
+	ret
+
+Get_Address endp
+;-------------------------------------------------------------------------------------------------------------
+Asm_Draw_Line proc
+; extern "C" void Asm_Draw_Line(char* video_buffer, SPoint start_pos, SPoint finish_pos, SBuf_Color buffer_color);
+; Parameters
+; RCX = char *video_buffer, 
+; RDX = start_pos
+; R8 = finish_pos
+; R9 = buffer_color
+; Return = void;
+
+	push rax
+	push rdi
+	push r11
+
+	mov r11, rcx
+
+	call Get_Address ; RDI = address of the position start_pos in the buffer 
+
+
 	mov rax, r9
 	shr rax, 32 ; RAX = EAX = buffer_color.Color
 
 	stosd
 
-	pop r10
+	pop r11
 	pop rdi
-	pop rdx
 	pop rax
 
 	ret
