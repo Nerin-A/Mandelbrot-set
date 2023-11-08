@@ -211,7 +211,7 @@ void On_Paint(HWND hwnd)
 	HDC hdc, frame_dc;
 	PAINTSTRUCT ps;
 	SBuf_Color buffer_color;
-	SPoint start_point(100, 200);
+	SPoint start_point(0, 0);
 	SPoint finish_point(400, 500);
 
 	hdc = BeginPaint(hwnd, &ps);
@@ -227,7 +227,7 @@ void On_Paint(HWND hwnd)
 	buffer_color.Buffer_Size = DC.Buf_Size;
 	buffer_color.Color = 0xffffffff;
 
-	Draw_Horizontal_Line(buf, start_point, 250, buffer_color);
+	Asm_Draw_Horizontal_Line(buf, start_point, DC.Buf_Size.Width, buffer_color);
 
 
 	SelectObject(frame_dc, DC.White_Pen);

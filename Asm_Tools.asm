@@ -27,10 +27,8 @@ Get_Address proc
 ; R11 = char *video_buffer, 
 ; Return = RDI = Address of the pixel
 	push rax
-	push rdx
+	push rbx
 	push r10
-
-	mov rdi, rcx
 
 	movzx r10, r9w ; R10 = R10W = buffer_color.Buffer_Size.Width
 
@@ -44,11 +42,11 @@ Get_Address proc
 	add rax, rbx ; RAX = index = start_pos.Y * buffer_color.Buffer_Size.Width + start_pos.X
 	shl rax, 2 ; RAX = index * 4 = the pixel address in buffer
 
-
+	mov rdi, r11
 	add rdi, rax
 
 	pop r10
-	pop rdx
+	pop rbx
 	pop rax
 
 	ret
@@ -86,8 +84,8 @@ Asm_Draw_Line proc
 
 Asm_Draw_Line endp
 ;-------------------------------------------------------------------------------------------------------------
-Draw_Horizontal_Line proc
-; extern "C" void Draw_Horizontal_Line(char* video_buffer, SPoint start_pos,  unsigned short length, SBuf_Color buffer_color);
+Asm_Draw_Horizontal_Line proc
+; extern "C" void Asm_Draw_Horizontal_Line(char* video_buffer, SPoint start_pos,  unsigned short length, SBuf_Color buffer_color);
 ; Parameters
 ; RCX = char *video_buffer, 
 ; RDX = start_pos
@@ -120,7 +118,7 @@ Draw_Horizontal_Line proc
 
 	ret
 
-Draw_Horizontal_Line endp
+Asm_Draw_Horizontal_Line endp
 ;-------------------------------------------------------------------------------------------------------------
 
 end
