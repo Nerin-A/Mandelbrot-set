@@ -205,8 +205,9 @@ BOOL InitInstance(HINSTANCE instance, int cmd_show)
 	return TRUE;
 }
 //------------------------------------------------------------------------------------------------------------
-void Clear_Screen()
+void Clear_Screen(HDC frame_dc)
 {
+	int i;
 	char* buf;
 	SBuf_Color buffer_color;
 	SPoint start_point(0, 0);
@@ -219,13 +220,20 @@ void Clear_Screen()
 	buffer_color.Buffer_Size = DC.Buf_Size;
 	buffer_color.Color = 0xffffffff;
 
-	Asm_Draw_Horizontal_Line(buf, start_point, DC.Buf_Size.Width, buffer_color);
+	//for (i = 0; i < DC.Buf_Size.Height; i++)
+	//{
+	//	start_point.Y = i;
+	//	Asm_Draw_Horizontal_Line(buf, start_point, DC.Buf_Size.Width, buffer_color);
+	//}
 
+	SelectObject(frame_dc, DC.White_Pen);
 
-	//SelectObject(frame_dc, DC.White_Pen);
+	for (i = 0; i < DC.Buf_Size.Height; i++)
+	{
 
-	//MoveToEx(frame_dc, 100, 200, 0);
-	//LineTo(frame_dc, 300, 400);
+		MoveToEx(frame_dc, 0, i, 0);
+		LineTo(frame_dc, DC.Buf_Size.Width, i);
+	}
 }
 //------------------------------------------------------------------------------------------------------------
 void On_Paint(HWND hwnd)
@@ -239,7 +247,7 @@ void On_Paint(HWND hwnd)
 
 	GdiFlush();
 
-	Clear_Screen();
+	Clear_Screen(frame_dc);
 
 	BitBlt(hdc, 0, 0, DC.Buf_Size.Width, DC.Buf_Size.Height, frame_dc, 0, 0, SRCCOPY);
 
