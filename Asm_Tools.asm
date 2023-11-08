@@ -40,7 +40,14 @@ Asm_Draw_Line proc
 
 	imul rax, r10 ; RAX = RAX * R10 = start_pos.Y * buffer_color.Buffer_Size.Width
 	add rax, rbx ; RAX = index = start_pos.Y * buffer_color.Buffer_Size.Width + start_pos.X
-	shl rax, 2
+	shl rax, 2 ; RAX = index * 4 = the pixel address in buffer
+
+
+	add rdi, rax
+	mov rax, r9
+	shr rax, 32 ; RAX = EAX = buffer_color.Color
+
+	stosd
 
 	ret
 
