@@ -96,21 +96,26 @@ Draw_Horizontal_Line proc
 ; Return = void;
 
 	push rax
+	push rcx
 	push rdi
 	push r11
 
 	mov r11, rcx
 
+	; 1. Calculating the address of the beginning of the line
 	call Get_Address ; RDI = address of the position start_pos in the buffer 
 
+	; 2. Drawing the line
+	mov rcx, r8 ; RCX = length = number of pixels in the line
 
 	mov rax, r9
 	shr rax, 32 ; RAX = EAX = buffer_color.Color
 
-	stosd
+	rep stosd
 
 	pop r11
 	pop rdi
+	pop rcx
 	pop rax
 
 	ret
