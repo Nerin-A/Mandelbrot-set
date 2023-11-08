@@ -29,11 +29,18 @@ Asm_Draw_Line proc
 ; Return = void;
 
 	mov rdi, rcx
-	mov eax, 0ffffffffh
+
+	movzx r10, r9w ; R10 = R10W = buffer_color.Buffer_Size.Width
+
+	mov rax, rdx
+	shr rax, 16
+	movzx rax, ax ; RAX = AX = start_pos.Y
 	
-	mov rcx, 100
-	
-	rep stosd 
+	movzx rbx, dx ; RBX = BX = start_pos.X
+
+	imul rax, r10 ; RAX = RAX * R10 = start_pos.Y * buffer_color.Buffer_Size.Width
+	add rax, rbx ; RAX = index = start_pos.Y * buffer_color.Buffer_Size.Width + start_pos.X
+	shl rax, 2
 
 	ret
 
