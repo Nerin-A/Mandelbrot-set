@@ -205,20 +205,12 @@ BOOL InitInstance(HINSTANCE instance, int cmd_show)
 	return TRUE;
 }
 //------------------------------------------------------------------------------------------------------------
-void On_Paint(HWND hwnd)
+void Clear_Screen()
 {
 	char* buf;
-	HDC hdc, frame_dc;
-	PAINTSTRUCT ps;
 	SBuf_Color buffer_color;
 	SPoint start_point(0, 0);
 	SPoint finish_point(400, 500);
-
-	hdc = BeginPaint(hwnd, &ps);
-	frame_dc = DC.Get_DC(hwnd, hdc);
-	//Engine.Draw_Frame(frame_dc, ps.rcPaint);
-
-	GdiFlush();
 
 	buf = DC.Get_Buf();
 
@@ -230,10 +222,24 @@ void On_Paint(HWND hwnd)
 	Asm_Draw_Horizontal_Line(buf, start_point, DC.Buf_Size.Width, buffer_color);
 
 
-	SelectObject(frame_dc, DC.White_Pen);
+	//SelectObject(frame_dc, DC.White_Pen);
 
-	MoveToEx(frame_dc, 100, 200, 0);
-	LineTo(frame_dc, 300, 400);
+	//MoveToEx(frame_dc, 100, 200, 0);
+	//LineTo(frame_dc, 300, 400);
+}
+//------------------------------------------------------------------------------------------------------------
+void On_Paint(HWND hwnd)
+{
+	HDC hdc, frame_dc;
+	PAINTSTRUCT ps;
+
+	hdc = BeginPaint(hwnd, &ps);
+	frame_dc = DC.Get_DC(hwnd, hdc);
+	//Engine.Draw_Frame(frame_dc, ps.rcPaint);
+
+	GdiFlush();
+
+	Clear_Screen();
 
 	BitBlt(hdc, 0, 0, DC.Buf_Size.Width, DC.Buf_Size.Height, frame_dc, 0, 0, SRCCOPY);
 
