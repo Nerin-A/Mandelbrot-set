@@ -212,6 +212,7 @@ void Clear_Screen(HDC frame_dc)
 	SBuf_Color buffer_color;
 	SPoint start_point(0, 0);
 	SPoint finish_point(400, 500);
+	unsigned long long start_cpu_tick, end_cpu_tick, cpu_ticks;
 
 	buf = DC.Get_Buf();
 
@@ -220,20 +221,27 @@ void Clear_Screen(HDC frame_dc)
 	buffer_color.Buffer_Size = DC.Buf_Size;
 	buffer_color.Color = 0xffffffff;
 
-	//for (i = 0; i < DC.Buf_Size.Height; i++)
-	//{
-	//	start_point.Y = i;
-	//	Asm_Draw_Horizontal_Line(buf, start_point, DC.Buf_Size.Width, buffer_color);
-	//}
-
-	SelectObject(frame_dc, DC.White_Pen);
+	start_cpu_tick = __rdtsc();
 
 	for (i = 0; i < DC.Buf_Size.Height; i++)
 	{
-
-		MoveToEx(frame_dc, 0, i, 0);
-		LineTo(frame_dc, DC.Buf_Size.Width, i);
+		start_point.Y = i;
+		Asm_Draw_Horizontal_Line(buf, start_point, DC.Buf_Size.Width, buffer_color);
 	}
+
+	//SelectObject(frame_dc, DC.White_Pen);
+
+
+	//for (i = 0; i < DC.Buf_Size.Height; i++)
+	//{
+
+	//	MoveToEx(frame_dc, 0, i, 0);
+	//	LineTo(frame_dc, DC.Buf_Size.Width, i);
+	//}
+
+	end_cpu_tick = __rdtsc();
+
+	cpu_ticks = end_cpu_tick - start_cpu_tick; // 4243752 || 4153716 || 4280760 on WinAPI AND 202068 || 127692 || 127224 using Asm function!
 }
 //------------------------------------------------------------------------------------------------------------
 void On_Paint(HWND hwnd)
