@@ -86,5 +86,36 @@ Asm_Draw_Line proc
 
 Asm_Draw_Line endp
 ;-------------------------------------------------------------------------------------------------------------
+Draw_Horizontal_Line proc
+; extern "C" void Draw_Horizontal_Line(char* video_buffer, SPoint start_pos,  unsigned short length, SBuf_Color buffer_color);
+; Parameters
+; RCX = char *video_buffer, 
+; RDX = start_pos
+; R8 = length
+; R9 = buffer_color
+; Return = void;
+
+	push rax
+	push rdi
+	push r11
+
+	mov r11, rcx
+
+	call Get_Address ; RDI = address of the position start_pos in the buffer 
+
+
+	mov rax, r9
+	shr rax, 32 ; RAX = EAX = buffer_color.Color
+
+	stosd
+
+	pop r11
+	pop rdi
+	pop rax
+
+	ret
+
+Draw_Horizontal_Line endp
+;-------------------------------------------------------------------------------------------------------------
 
 end

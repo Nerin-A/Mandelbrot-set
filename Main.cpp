@@ -227,7 +227,7 @@ void On_Paint(HWND hwnd)
 	buffer_color.Buffer_Size = DC.Buf_Size;
 	buffer_color.Color = 0xffffffff;
 
-	Asm_Draw_Line(buf, start_point, finish_point, buffer_color);
+	Draw_Horizontal_Line(buf, start_point, 250, buffer_color);
 
 
 	SelectObject(frame_dc, DC.White_Pen);
