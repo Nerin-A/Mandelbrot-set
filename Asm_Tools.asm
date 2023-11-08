@@ -28,6 +28,11 @@ Asm_Draw_Line proc
 ; R9 = buffer_color
 ; Return = void;
 
+	push rax
+	push rdx
+	push rdi
+	push r10
+
 	mov rdi, rcx
 
 	movzx r10, r9w ; R10 = R10W = buffer_color.Buffer_Size.Width
@@ -48,6 +53,11 @@ Asm_Draw_Line proc
 	shr rax, 32 ; RAX = EAX = buffer_color.Color
 
 	stosd
+
+	pop r10
+	pop rdi
+	pop rdx
+	pop rax
 
 	ret
 
