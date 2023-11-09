@@ -248,8 +248,8 @@ void Draw_Line(HDC frame_dc)
 {
 	char* buf;
 	SBuf_Color buffer_color;
-	SPoint start_point(0, 0);
-	SPoint finish_point(400, 500);
+	SPoint start_point(1, 1);
+	SPoint finish_point(14, 4);
 
 	//SelectObject(frame_dc, DC.White_Pen);
 

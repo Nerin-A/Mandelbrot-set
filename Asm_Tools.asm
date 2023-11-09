@@ -98,6 +98,13 @@ Asm_Draw_Line proc
 	sub bx, cx ; BX = finish_pos.Y - start_pos.Y
 
 	; 3. Chosing the algorhytm - are the line tilds toward vertical horizontal shape?
+	cmp ax, bx
+	jle _draw_horizontal_line
+
+_draw_vertical_line:
+
+
+_draw_horizontal_line:
 
 
 	mov rax, r9
