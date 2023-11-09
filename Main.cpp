@@ -246,21 +246,37 @@ void Clear_Screen(HDC frame_dc)
 //------------------------------------------------------------------------------------------------------------
 void Draw_Line(HDC frame_dc)
 {
+	int i;
 	char* buf;
 	SBuf_Color buffer_color;
-	SPoint start_point(1, 1);
-	SPoint finish_point(4, 14);
+	SPoint start_point(10, 0);
+	SPoint finish_point(910, 100);
+	unsigned long long start_cpu_tick, end_cpu_tick, cpu_ticks;
 
 	//SelectObject(frame_dc, DC.White_Pen);
 
-	//MoveToEx(frame_dc, 10, 20, 0);
-	//LineTo(frame_dc, 110, 320);   
+	start_cpu_tick = __rdtsc();
+
+	//for (i = 0; i < DC.Buf_Size.Height - 100; i++)
+	//{
+	//	MoveToEx(frame_dc, 10, i, 0);
+	//	LineTo(frame_dc, 910, i + 100);
+	//}
 
 	buf = DC.Get_Buf();
 	buffer_color.Buffer_Size = DC.Buf_Size;
 	buffer_color.Color = 0xffffffff;
 
-	Asm_Draw_Line(buf, start_point, finish_point, buffer_color);
+	for (i = 0; i < DC.Buf_Size.Height - 100; i++)
+	{
+		start_point.Y = i;
+		finish_point.Y = i + 100;
+		Asm_Draw_Line(buf, start_point, finish_point, buffer_color);
+	}
+
+	end_cpu_tick = __rdtsc();
+
+	cpu_ticks = end_cpu_tick - start_cpu_tick; // WinAPI ->>> 3 341 304 || 3 362 976 || 3 545 604 \\\ Asm function ->>> 1 340 640 || 1 299 636 || 1 299 096. So Asm function 3x time faster!
 
 }
 //------------------------------------------------------------------------------------------------------------
