@@ -244,6 +244,26 @@ void Clear_Screen(HDC frame_dc)
 	cpu_ticks = end_cpu_tick - start_cpu_tick; // 4243752 || 4153716 || 4280760 on WinAPI AND 202068 || 127692 || 127224 using Asm function!
 }
 //------------------------------------------------------------------------------------------------------------
+void Draw_Line(HDC frame_dc)
+{
+	char* buf;
+	SBuf_Color buffer_color;
+	SPoint start_point(0, 0);
+	SPoint finish_point(400, 500);
+
+	//SelectObject(frame_dc, DC.White_Pen);
+
+	//MoveToEx(frame_dc, 10, 20, 0);
+	//LineTo(frame_dc, 110, 320);   
+
+	buf = DC.Get_Buf();
+	buffer_color.Buffer_Size = DC.Buf_Size;
+	buffer_color.Color = 0xffffffff;
+
+	Asm_Draw_Line(buf, start_point, finish_point, buffer_color);
+
+}
+//------------------------------------------------------------------------------------------------------------
 void On_Paint(HWND hwnd)
 {
 	HDC hdc, frame_dc;
@@ -255,7 +275,8 @@ void On_Paint(HWND hwnd)
 
 	GdiFlush();
 
-	Clear_Screen(frame_dc);
+	//	Clear_Screen(frame_dc);
+	Draw_Line(frame_dc);
 
 	BitBlt(hdc, 0, 0, DC.Buf_Size.Width, DC.Buf_Size.Height, frame_dc, 0, 0, SRCCOPY);
 

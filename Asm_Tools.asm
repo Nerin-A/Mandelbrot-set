@@ -83,9 +83,21 @@ Asm_Draw_Line proc
 	cmp bx, ax
 	jbe _exit
 
-
-
+	; 2. Calculating address of the beginning of the line
 	call Get_Address ; RDI = address of the position start_pos in the buffer 
+
+	mov ax, r8w ; AX = finish_pos.X
+	sub ax, dx ; AX = AX - DX = finish_pos.X - start_pos.X = delta_X
+
+	mov ebx, r8d
+	shr ebx, 16 ; EBX = BX = finish_pos.Y
+
+	mov ecx, edx
+	shr ecx, 16 ; ECX = CX = start_pos.Y
+
+	sub bx, cx ; BX = finish_pos.Y - start_pos.Y
+
+	; 3. Chosing the algorhytm - are the line tilds toward vertical horizontal shape?
 
 
 	mov rax, r9
