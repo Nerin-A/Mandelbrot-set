@@ -68,6 +68,23 @@ Asm_Draw_Line proc
 
 	mov r11, rcx
 
+	; 1. Are the end point coordinates smaller than the start point coordinates?
+	; 1.1 Checking X coord
+	cmp r8w, dx
+	jbe _exit
+
+	; 1.2 Checking Y coord
+	mov eax, edx
+	shr eax, 16 ; EAX = AX = start_pos.Y
+
+	mov ebx, r8d
+	shr ebx, 16 ; EBX = BX = finish_pos.X
+
+	cmp bx, ax
+	jbe _exit
+
+
+
 	call Get_Address ; RDI = address of the position start_pos in the buffer 
 
 
@@ -75,6 +92,8 @@ Asm_Draw_Line proc
 	shr rax, 32 ; RAX = EAX = buffer_color.Color
 
 	stosd
+
+_exit:
 
 	pop r11
 	pop rdi
