@@ -63,8 +63,15 @@ Asm_Draw_Line proc
 ; Return = void;
 
 	push rax
+	push rbx
+	push rcx
+	push rdx
 	push rdi
 	push r11
+	push r12
+	push r13
+	push r14
+	push r15
 
 	mov r11, rcx
 
@@ -164,8 +171,15 @@ _draw_vertical_pixel:
 
 _exit:
 
+	pop r15
+	pop r14
+	pop r13
+	pop r12
 	pop r11
 	pop rdi
+	pop rdx
+	pop rcx
+	pop rbx
 	pop rax
 
 	ret
