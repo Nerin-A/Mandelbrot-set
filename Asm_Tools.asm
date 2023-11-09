@@ -119,7 +119,6 @@ Asm_Draw_Line proc
 	mov rax, r9
 	shr rax, 32 ; RAX = EAX = buffer_color.Color
 
-
 _draw_horizontal_pixel:
 	stosd 
 
@@ -132,11 +131,35 @@ _draw_horizontal_pixel:
 	add rdi, r15
 	loop _draw_horizontal_pixel
 
+	jmp _exit
+
+
+
 _draw_vertical_line:
 
+	xor r14w, r14w ; Numerator accumulator
 
+	movzx rcx, r12w ; RCX = delta_X = number of iterations
 
+	movzx r15, r9w ; R15 = buffer_color.Buffer_Size.Width in pixels
+	dec r15
+	shl r15, 2 ; buffer width in bytes
 
+	mov rax, r9
+	shr rax, 32 ; RAX = EAX = buffer_color.Color
+
+_draw_vertical_pixel:
+	stosd 
+	add rdi, r15
+
+	add r14w, r12w ; We add the numerator to the numerator accumulator until there is an overflow there. We form a horizontal chain of pixels.
+	cmp r14w, r13w ; Has the numerator exceeded the denominator?
+	jl _draw_vertical_pixel 
+
+	sub r14w, r13w ; Subtract the denominator from the numerator accumulator.
+
+	add rdi, 4
+	loop _draw_vertical_pixel
 
 
 _exit:
