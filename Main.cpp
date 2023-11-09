@@ -277,7 +277,6 @@ void Draw_Line(HDC frame_dc)
 	end_cpu_tick = __rdtsc();
 
 	cpu_ticks = end_cpu_tick - start_cpu_tick; // WinAPI ->>> 3 341 304 || 3 362 976 || 3 545 604 \\\ Asm function ->>> 1 340 640 || 1 299 636 || 1 299 096. So Asm function 3x time faster!
-
 }
 //------------------------------------------------------------------------------------------------------------
 void On_Paint(HWND hwnd)
