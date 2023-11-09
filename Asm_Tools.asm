@@ -88,6 +88,8 @@ Asm_Draw_Line proc
 
 	mov ax, r8w ; AX = finish_pos.X
 	sub ax, dx ; AX = AX - DX = finish_pos.X - start_pos.X = delta_X
+	inc ax
+	mov r12w, ax ; R12W = delta_X
 
 	mov ebx, r8d
 	shr ebx, 16 ; EBX = BX = finish_pos.Y
@@ -95,20 +97,48 @@ Asm_Draw_Line proc
 	mov ecx, edx
 	shr ecx, 16 ; ECX = CX = start_pos.Y
 
-	sub bx, cx ; BX = finish_pos.Y - start_pos.Y
+	sub bx, cx ; BX = finish_pos.Y - start_pos.Y = delta_Y
+	inc bx
+	mov r13w, bx ; R12W = delta_X
 
 	; 3. Chosing the algorhytm - are the line tilds toward vertical horizontal shape?
 	cmp ax, bx
-	jle _draw_horizontal_line
+	jle _draw_vertical_line
+
+
+; _draw_horizontal_line:
+	; Going to the next line IF overflow
+
+	xor r14w, r14w ; Numerator accumulator
+
+	movzx rcx, r13w ; RCX = delta_Y = number of iterations
+
+	movzx r15, r9w ; R15 = buffer_color.Buffer_Size.Width in pixels
+	shl r15, 2 ; buffer width in bytes
+
+	mov rax, r9
+	shr rax, 32 ; RAX = EAX = buffer_color.Color
+
+
+_draw_horizontal_pixel:
+	stosd 
+
+	add r14w, r12w ; We add the numerator to the numerator accumulator until there is an overflow there. We form a horizontal chain of pixels.
+	cmp r14w, r13w ; Has the numerator exceeded the denominator?
+	jl _draw_horizontal_pixel 
+
+	sub r14w, r13w ; Subtract the denominator from the numerator accumulator.
+
+	add rdi, r15
+	loop _draw_horizontal_pixel
+
+
 
 _draw_vertical_line:
 
 
-_draw_horizontal_line:
 
 
-	mov rax, r9
-	shr rax, 32 ; RAX = EAX = buffer_color.Color
 
 	stosd
 
