@@ -123,16 +123,14 @@ Asm_Draw_Line proc
 _draw_horizontal_pixel:
 	stosd 
 
-	add r14w, r12w ; We add the numerator to the numerator accumulator until there is an overflow there. We form a horizontal chain of pixels.
-	cmp r14w, r13w ; Has the numerator exceeded the denominator?
+	add r14w, r13w ; We add the numerator to the numerator accumulator until there is an overflow there. We form a horizontal chain of pixels.
+	cmp r14w, r12w ; Has the numerator exceeded the denominator?
 	jl _draw_horizontal_pixel 
 
-	sub r14w, r13w ; Subtract the denominator from the numerator accumulator.
+	sub r14w, r12w ; Subtract the denominator from the numerator accumulator.
 
 	add rdi, r15
 	loop _draw_horizontal_pixel
-
-
 
 _draw_vertical_line:
 
@@ -140,7 +138,6 @@ _draw_vertical_line:
 
 
 
-	stosd
 
 _exit:
 
