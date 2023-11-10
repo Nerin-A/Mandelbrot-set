@@ -294,6 +294,7 @@ void Draw_Mandelbrot(HDC frame_dc)
 	float x_scale = (float)DC.Buf_Size.Width / (float)DC.Buf_Size.Height * Global_Scale;
 	float distance;
 	unsigned char color;
+	
 	//unsigned long long start_cpu_tick, end_cpu_tick, cpu_ticks;
 
 	//start_cpu_tick = __rdtsc();
@@ -344,6 +345,29 @@ void Draw_Mandelbrot(HDC frame_dc)
 	SetPixel(frame_dc, DC.Buf_Size.Width / 2, DC.Buf_Size.Height / 2, RGB(255, 255, 255));
 }
 //------------------------------------------------------------------------------------------------------------
+void Draw_Monochrome_Palette(HDC hdc)
+{
+	int i;
+	const int iterations_count = 100;
+	HPEN pen;
+	HBRUSH brush;
+	double x_pos = 0.0;
+	double bar_width = (double)DC.Buf_Size.Width / (double)iterations_count;
+
+	for (i = 0; i < iterations_count; i++)
+	{
+		pen = CreatePen(PS_SOLID, 0, RGB(i, i, i));
+		brush = CreateSolidBrush(RGB(i, i, i));
+
+		SelectObject(hdc, pen);
+		SelectObject(hdc, brush);
+
+		Rectangle(hdc, (int) x_pos, 0, (int) (x_pos + bar_width), (int) DC.Buf_Size.Height / 2);
+
+		x_pos += bar_width;
+	}
+}
+//------------------------------------------------------------------------------------------------------------
 void On_Paint(HWND hwnd)
 {
 	HDC hdc, frame_dc;
@@ -360,7 +384,10 @@ void On_Paint(HWND hwnd)
 
 	Global_Scale /= 2.0f;
 
-	Draw_Mandelbrot(frame_dc);
+	//Draw_Mandelbrot(frame_dc);
+
+	Draw_Monochrome_Palette(frame_dc);
+
 	InvalidateRect(hwnd, &ps.rcPaint, FALSE);
 
 	BitBlt(hdc, 0, 0, DC.Buf_Size.Width, DC.Buf_Size.Height, frame_dc, 0, 0, SRCCOPY);
