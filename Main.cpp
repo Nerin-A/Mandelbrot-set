@@ -279,6 +279,26 @@ void Draw_Line(HDC frame_dc)
 	cpu_ticks = end_cpu_tick - start_cpu_tick; // WinAPI ->>> 3 341 304 || 3 362 976 || 3 545 604 \\\ Asm function ->>> 1 340 640 || 1 299 636 || 1 299 096. So Asm function 3x time faster!
 }
 //------------------------------------------------------------------------------------------------------------
+void Draw_Mandelbrot(HDC frame_dc)
+{
+	int x, y;
+	float x_0, x_n, x_n1;
+	float y_0, y_n, y_n1;
+
+	for (y = 0; y < DC.Buf_Size.Height; ++y)
+	{
+		y_0 = (float)x / (float)DC.Buf_Size.Height - 0.5f; // y_0 = [-0.5f ... 0.5f)
+
+		for (x = 0; x < DC.Buf_Size.Width; x++)
+		{
+			x_0 = (float)x / (float)DC.Buf_Size.Width - 0.5f; // x_0 = [-0.5f ... 0.5f)
+
+			x_n1 = x_n * x_n - y_n * y_n + x_0;
+			y_n1 = 2.0f * x_n * y_n + y_0;
+		}
+	}
+}
+//------------------------------------------------------------------------------------------------------------
 void On_Paint(HWND hwnd)
 {
 	HDC hdc, frame_dc;
