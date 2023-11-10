@@ -334,8 +334,12 @@ void Draw_Mandelbrot(HDC frame_dc)
 
 	end_cpu_tick = __rdtsc();
 
-	cpu_ticks = end_cpu_tick - start_cpu_tick; // DEBUG WinAPI ->>> 3 264 438 708 || 3 271 177 618 || 3 219 223 174 || 3 208 083 697 - almost 1 sec on my 3.6Hhz CPU \\\ Asm function ->>>
-	// RELEASE 
+	cpu_ticks = end_cpu_tick - start_cpu_tick; 
+	// DEBUG WinAPI ->>> 3 264 438 708 || 3 271 177 618 || 3 219 223 174 || 3 208 083 697 - almost 1 sec on my 3.6Hhz CPU \\\ Asm function ->>> TODO
+	// RELEASE WinAPI ->>> 2 668 194 145 || 2 663 908 377 || 2 700 979 201 \\ Asm ->>> TODO
+	// so using WinAPI RELEASE mode is 1.22 times faster and using Asm RELEASE mode is TODO times faster
+	
+	SetPixel(frame_dc, (int)cpu_ticks, (int)cpu_ticks, RGB(color, color, color));
 }
 //------------------------------------------------------------------------------------------------------------
 void On_Paint(HWND hwnd)
