@@ -288,8 +288,8 @@ void Draw_Mandelbrot(HDC frame_dc)
 	const int iterations_count = 100;
 	float x_0, x_n, x_n1;
 	float y_0, y_n, y_n1;
-	float center_x = -1.2f;
-	float center_y = -0.8f;
+	float center_x = -1.0f;
+	float center_y = -0.3f;
 	float x_scale = (float)DC.Buf_Size.Width / (float)DC.Buf_Size.Height * Global_Scale;
 	float distance;
 	unsigned char color;
@@ -299,13 +299,13 @@ void Draw_Mandelbrot(HDC frame_dc)
 
 	for (y = 0; y < DC.Buf_Size.Height; ++y)
 	{
-		y_0 = (float)y / (float)DC.Buf_Size.Height + center_y; // y_0 = [-0.5f ... 0.5f)
-		y_0 *= Global_Scale;
+		y_0 = (float)y / (float)DC.Buf_Size.Height - 0.5f; // y_0 = [-0.5f ... 0.5f)
+		y_0 = y_0 * Global_Scale + center_y;
 
 		for (x = 0; x < DC.Buf_Size.Width; x++)
 		{
-			x_0 = (float)x / (float)DC.Buf_Size.Width + center_x; // x_0 = [-0.5f ... 0.5f)
-			x_0 *= x_scale;
+			x_0 = (float)x / (float)DC.Buf_Size.Width - 0.5f; // x_0 = [-0.5f ... 0.5f)
+			x_0 = x_0 * x_scale + center_x;
 
 			x_n = 0.0f;
 			y_n = 0.0f;
@@ -340,7 +340,7 @@ void Draw_Mandelbrot(HDC frame_dc)
 	// RELEASE WinAPI ->>> 2 668 194 145 || 2 663 908 377 || 2 700 979 201 \\ Asm ->>> TODO
 	// so using WinAPI RELEASE mode is 1.22 times faster and using Asm RELEASE mode is TODO times faster
 	
-	//SetPixel(frame_dc, (int)cpu_ticks, (int)cpu_ticks, RGB(color, color, color));
+	SetPixel(frame_dc, DC.Buf_Size.Width / 2, DC.Buf_Size.Height / 2, RGB(255, 255, 255));
 }
 //------------------------------------------------------------------------------------------------------------
 void On_Paint(HWND hwnd)
@@ -360,7 +360,7 @@ void On_Paint(HWND hwnd)
 	Global_Scale /= 1.1f;
 
 	Draw_Mandelbrot(frame_dc);
-	InvalidateRect(hwnd, &ps.rcPaint, FALSE);
+	//InvalidateRect(hwnd, &ps.rcPaint, FALSE);
 
 	BitBlt(hdc, 0, 0, DC.Buf_Size.Width, DC.Buf_Size.Height, frame_dc, 0, 0, SRCCOPY);
 
