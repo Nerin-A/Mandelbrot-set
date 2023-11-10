@@ -110,6 +110,8 @@ char* AsFrame_DC::Get_Buf()
 #define MAX_LOADSTRING 100
 
 // Global Variables:
+float Global_Scale = 1.0f;
+
 AsFrame_DC DC;
 HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
@@ -251,11 +253,11 @@ void Draw_Line(HDC frame_dc)
 	SBuf_Color buffer_color;
 	SPoint start_point(10, 0);
 	SPoint finish_point(910, 100);
-	unsigned long long start_cpu_tick, end_cpu_tick, cpu_ticks;
+	//unsigned long long start_cpu_tick, end_cpu_tick, cpu_ticks;
 
 	//SelectObject(frame_dc, DC.White_Pen);
 
-	start_cpu_tick = __rdtsc();
+	//start_cpu_tick = __rdtsc();
 
 	//for (i = 0; i < DC.Buf_Size.Height - 100; i++)
 	//{
@@ -274,9 +276,9 @@ void Draw_Line(HDC frame_dc)
 		Asm_Draw_Line(buf, start_point, finish_point, buffer_color);
 	}
 
-	end_cpu_tick = __rdtsc();
+	//end_cpu_tick = __rdtsc();
 
-	cpu_ticks = end_cpu_tick - start_cpu_tick; // WinAPI ->>> 3 341 304 || 3 362 976 || 3 545 604 \\\ Asm function ->>> 1 340 640 || 1 299 636 || 1 299 096. So Asm function 3x time faster!
+	//cpu_ticks = end_cpu_tick - start_cpu_tick; // WinAPI ->>> 3 341 304 || 3 362 976 || 3 545 604 \\\ Asm function ->>> 1 340 640 || 1 299 636 || 1 299 096. So Asm function 3x time faster!
 }
 //------------------------------------------------------------------------------------------------------------
 void Draw_Mandelbrot(HDC frame_dc)
@@ -286,20 +288,19 @@ void Draw_Mandelbrot(HDC frame_dc)
 	const int iterations_count = 100;
 	float x_0, x_n, x_n1;
 	float y_0, y_n, y_n1;
-	float center_x = -1.4f;
-	float center_y = -1.2f;
-	float scale = 0.5f;
-	float x_scale = (float)DC.Buf_Size.Width / (float)DC.Buf_Size.Height * scale;
+	float center_x = -1.2f;
+	float center_y = -0.8f;
+	float x_scale = (float)DC.Buf_Size.Width / (float)DC.Buf_Size.Height * Global_Scale;
 	float distance;
 	unsigned char color;
-	unsigned long long start_cpu_tick, end_cpu_tick, cpu_ticks;
+	//unsigned long long start_cpu_tick, end_cpu_tick, cpu_ticks;
 
-	start_cpu_tick = __rdtsc();
+	//start_cpu_tick = __rdtsc();
 
 	for (y = 0; y < DC.Buf_Size.Height; ++y)
 	{
 		y_0 = (float)y / (float)DC.Buf_Size.Height + center_y; // y_0 = [-0.5f ... 0.5f)
-		y_0 *= scale;
+		y_0 *= Global_Scale;
 
 		for (x = 0; x < DC.Buf_Size.Width; x++)
 		{
@@ -332,14 +333,14 @@ void Draw_Mandelbrot(HDC frame_dc)
 		}
 	}
 
-	end_cpu_tick = __rdtsc();
+	//end_cpu_tick = __rdtsc();
 
-	cpu_ticks = end_cpu_tick - start_cpu_tick; 
+	//cpu_ticks = end_cpu_tick - start_cpu_tick; 
 	// DEBUG WinAPI ->>> 3 264 438 708 || 3 271 177 618 || 3 219 223 174 || 3 208 083 697 - almost 1 sec on my 3.6Hhz CPU \\\ Asm function ->>> TODO
 	// RELEASE WinAPI ->>> 2 668 194 145 || 2 663 908 377 || 2 700 979 201 \\ Asm ->>> TODO
 	// so using WinAPI RELEASE mode is 1.22 times faster and using Asm RELEASE mode is TODO times faster
 	
-	SetPixel(frame_dc, (int)cpu_ticks, (int)cpu_ticks, RGB(color, color, color));
+	//SetPixel(frame_dc, (int)cpu_ticks, (int)cpu_ticks, RGB(color, color, color));
 }
 //------------------------------------------------------------------------------------------------------------
 void On_Paint(HWND hwnd)
@@ -355,8 +356,11 @@ void On_Paint(HWND hwnd)
 
 	//	Clear_Screen(frame_dc);
 	// Draw_Line(frame_dc);
-	Draw_Mandelbrot(frame_dc);
 
+	Global_Scale /= 1.1f;
+
+	Draw_Mandelbrot(frame_dc);
+	InvalidateRect(hwnd, &ps.rcPaint, FALSE);
 
 	BitBlt(hdc, 0, 0, DC.Buf_Size.Width, DC.Buf_Size.Height, frame_dc, 0, 0, SRCCOPY);
 
