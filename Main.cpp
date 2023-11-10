@@ -286,9 +286,10 @@ void Draw_Mandelbrot(HDC frame_dc)
 	const int iterations_count = 100;
 	float x_0, x_n, x_n1;
 	float y_0, y_n, y_n1;
-	float center_x = -0.5f;
-	float center_y = -0.5f;
-	float scale = 2.0f;
+	float center_x = -1.4f;
+	float center_y = -1.2f;
+	float scale = 0.5f;
+	float x_scale = (float)DC.Buf_Size.Width / (float)DC.Buf_Size.Height * scale;
 	float distance;
 	unsigned char color;
 
@@ -300,10 +301,10 @@ void Draw_Mandelbrot(HDC frame_dc)
 		for (x = 0; x < DC.Buf_Size.Width; x++)
 		{
 			x_0 = (float)x / (float)DC.Buf_Size.Width + center_x; // x_0 = [-0.5f ... 0.5f)
-			x_0 *= scale;
+			x_0 *= x_scale;
 
-			x_n = 0;
-			y_n = 0;
+			x_n = 0.0f;
+			y_n = 0.0f;
 
 			for (i = 0; i < iterations_count; i++)
 			{
