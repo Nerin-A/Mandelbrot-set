@@ -281,9 +281,12 @@ void Draw_Line(HDC frame_dc)
 //------------------------------------------------------------------------------------------------------------
 void Draw_Mandelbrot(HDC frame_dc)
 {
+	int i;
 	int x, y;
+	const int iterations_count = 100;
 	float x_0, x_n, x_n1;
 	float y_0, y_n, y_n1;
+	float distance;
 
 	for (y = 0; y < DC.Buf_Size.Height; ++y)
 	{
@@ -293,8 +296,22 @@ void Draw_Mandelbrot(HDC frame_dc)
 		{
 			x_0 = (float)x / (float)DC.Buf_Size.Width - 0.5f; // x_0 = [-0.5f ... 0.5f)
 
-			x_n1 = x_n * x_n - y_n * y_n + x_0;
-			y_n1 = 2.0f * x_n * y_n + y_0;
+			x_n = 0;
+			y_n = 0;
+
+			for (i = 0; i < iterations_count; i++)
+			{
+				x_n1 = x_n * x_n - y_n * y_n + x_0;
+				y_n1 = 2.0f * x_n * y_n + y_0;
+
+				distance = x_n1 * x_n1 + y_n1 * y_n1;
+
+				if (distance > 4.0f)
+					break;
+
+				x_n = x_n1;
+				y_n = y_n1;
+			}
 		}
 	}
 }
