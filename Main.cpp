@@ -286,15 +286,19 @@ void Draw_Mandelbrot(HDC frame_dc)
 	const int iterations_count = 100;
 	float x_0, x_n, x_n1;
 	float y_0, y_n, y_n1;
+	float scale = 2.0f;
 	float distance;
+	unsigned char color;
 
 	for (y = 0; y < DC.Buf_Size.Height; ++y)
 	{
-		y_0 = (float)x / (float)DC.Buf_Size.Height - 0.5f; // y_0 = [-0.5f ... 0.5f)
+		y_0 = (float)y / (float)DC.Buf_Size.Height - 0.5f; // y_0 = [-0.5f ... 0.5f)
+		y_0 *= scale;
 
 		for (x = 0; x < DC.Buf_Size.Width; x++)
 		{
 			x_0 = (float)x / (float)DC.Buf_Size.Width - 0.5f; // x_0 = [-0.5f ... 0.5f)
+			x_0 *= scale;
 
 			x_n = 0;
 			y_n = 0;
@@ -312,6 +316,13 @@ void Draw_Mandelbrot(HDC frame_dc)
 				x_n = x_n1;
 				y_n = y_n1;
 			}
+
+			if (i == iterations_count)
+				color = 0;
+			else
+				color = i * 5 / 2;
+
+			SetPixel(frame_dc, x, y, RGB(color, color, color));
 		}
 	}
 }
@@ -328,7 +339,9 @@ void On_Paint(HWND hwnd)
 	GdiFlush();
 
 	//	Clear_Screen(frame_dc);
-	Draw_Line(frame_dc);
+	// Draw_Line(frame_dc);
+	Draw_Mandelbrot(frame_dc);
+
 
 	BitBlt(hdc, 0, 0, DC.Buf_Size.Width, DC.Buf_Size.Height, frame_dc, 0, 0, SRCCOPY);
 
