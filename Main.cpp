@@ -110,6 +110,7 @@ char* AsFrame_DC::Get_Buf()
 #define MAX_LOADSTRING 100
 
 // Global Variables:
+//float Global_Scale = 0.001f;
 float Global_Scale = 1.0f;
 
 AsFrame_DC DC;
@@ -288,7 +289,7 @@ void Draw_Mandelbrot(HDC frame_dc)
 	const int iterations_count = 100;
 	float x_0, x_n, x_n1;
 	float y_0, y_n, y_n1;
-	float center_x = -1.0f;
+	float center_x = -1.0f + 0.005606f;
 	float center_y = -0.3f;
 	float x_scale = (float)DC.Buf_Size.Width / (float)DC.Buf_Size.Height * Global_Scale;
 	float distance;
@@ -357,10 +358,10 @@ void On_Paint(HWND hwnd)
 	//	Clear_Screen(frame_dc);
 	// Draw_Line(frame_dc);
 
-	Global_Scale /= 1.1f;
+	Global_Scale /= 2.0f;
 
 	Draw_Mandelbrot(frame_dc);
-	//InvalidateRect(hwnd, &ps.rcPaint, FALSE);
+	InvalidateRect(hwnd, &ps.rcPaint, FALSE);
 
 	BitBlt(hdc, 0, 0, DC.Buf_Size.Width, DC.Buf_Size.Height, frame_dc, 0, 0, SRCCOPY);
 
