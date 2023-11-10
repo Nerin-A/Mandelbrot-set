@@ -292,6 +292,9 @@ void Draw_Mandelbrot(HDC frame_dc)
 	float x_scale = (float)DC.Buf_Size.Width / (float)DC.Buf_Size.Height * scale;
 	float distance;
 	unsigned char color;
+	unsigned long long start_cpu_tick, end_cpu_tick, cpu_ticks;
+
+	start_cpu_tick = __rdtsc();
 
 	for (y = 0; y < DC.Buf_Size.Height; ++y)
 	{
@@ -328,6 +331,11 @@ void Draw_Mandelbrot(HDC frame_dc)
 			SetPixel(frame_dc, x, y, RGB(color, color, color));
 		}
 	}
+
+	end_cpu_tick = __rdtsc();
+
+	cpu_ticks = end_cpu_tick - start_cpu_tick; // DEBUG WinAPI ->>> 3 264 438 708 || 3 271 177 618 || 3 219 223 174 || 3 208 083 697 - almost 1 sec on my 3.6Hhz CPU \\\ Asm function ->>>
+	// RELEASE 
 }
 //------------------------------------------------------------------------------------------------------------
 void On_Paint(HWND hwnd)
