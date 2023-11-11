@@ -33,6 +33,7 @@ public:
 	HDC Get_DC(HWND hwnd, HDC hdc);
 	char* Get_Buf();
 	void Create_Colorful_Palette();
+	void Create_Web_Palette();
 	void Draw_Colorful_Palette(HDC hdc);
 	void Draw_Monochrome_Palette(HDC hdc);
 
@@ -44,6 +45,7 @@ public:
 	static const int Colors_Count = 100;
 
 	int Palette_RGB[Colors_Count];
+	int Palette_Web[216];
 
 private:
 	int Color_To_RGB(int color);

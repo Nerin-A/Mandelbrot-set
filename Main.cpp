@@ -49,7 +49,8 @@ AsFrame_DC::AsFrame_DC()
 	BG_Brush = CreateSolidBrush(RGB(0, 0, 0));
 	White_Pen = CreatePen(PS_SOLID, 0, RGB(255, 255, 255) );
 
-	Create_Colorful_Palette();
+	//Create_Colorful_Palette();
+	Create_Web_Palette();
 }
 //------------------------------------------------------------------------------------------------------------
 HDC AsFrame_DC::Get_DC(HWND hwnd, HDC hdc)
@@ -119,6 +120,21 @@ void AsFrame_DC::Create_Colorful_Palette()
 
 		Palette_Pens[i] = CreatePen(PS_SOLID, 0, rgb_color);
 		Palette_Brushes[i] = CreateSolidBrush(rgb_color);
+	}
+}
+//------------------------------------------------------------------------------------------------------------
+void AsFrame_DC::Create_Web_Palette()
+{
+	int i;
+	unsigned char r, g, b;
+
+	for (i = 0; i < 216; i++)
+	{
+		r = (i % 6) * 0x33;
+		g = ((i / 6) % 6) * 0x33;
+		b = ((i / 36) % 6) * 0x33;
+
+		Palette_Web[i] = RGB(r, g, b);
 	}
 }
 //------------------------------------------------------------------------------------------------------------
