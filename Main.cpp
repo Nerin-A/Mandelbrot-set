@@ -51,8 +51,8 @@ AsFrame_DC::AsFrame_DC()
 
 	//Create_Colorful_Palette();
 	//Create_Web_Palette();
-	Create_Two_Colors_Palette(SRGB (255, 127, 63), SRGB(128, 0, 255));
-
+	Create_Two_Colors_Palette(0, SRGB(255, 127, 63), SRGB(0, 127, 63));
+	Create_Two_Colors_Palette(Colors_Count / 2, SRGB(0, 127, 63), SRGB(128, 0, 255));
 }
 //------------------------------------------------------------------------------------------------------------
 HDC AsFrame_DC::Get_DC(HWND hwnd, HDC hdc)
@@ -158,22 +158,23 @@ void AsFrame_DC::Create_Web_Palette()
 	}
 }
 //------------------------------------------------------------------------------------------------------------
-void AsFrame_DC::Create_Two_Colors_Palette(const SRGB &color_1, const SRGB &color_2)
+void AsFrame_DC::Create_Two_Colors_Palette(int start_index, const SRGB &color_1, const SRGB &color_2)
 {
 	int i;
+	int length = Colors_Count / 2;
 	double current_r, current_g, current_b;
 	double delta_r, delta_g, delta_b;
 	SRGB current_color(0, 0, 0);
 
-	delta_r = (double)(color_2.R - color_1.R) / (double)Colors_Count;
-	delta_g = (double)(color_2.G - color_1.G) / (double)Colors_Count;
-	delta_b = (double)(color_2.B - color_1.B) / (double)Colors_Count;
+	delta_r = (double)(color_2.R - color_1.R) / (double)length;
+	delta_g = (double)(color_2.G - color_1.G) / (double)length;
+	delta_b = (double)(color_2.B - color_1.B) / (double)length;
 
 	current_r = (double)color_1.R;
 	current_g = (double)color_1.G;
 	current_b = (double)color_1.B;
 
-	for (i = 0; i < Colors_Count; i++)
+	for (i = 0; i < length; i++)
 	{
 		current_color.R = (unsigned char)current_r;
 		current_color.G = (unsigned char)current_g;
@@ -183,7 +184,7 @@ void AsFrame_DC::Create_Two_Colors_Palette(const SRGB &color_1, const SRGB &colo
 		current_g += delta_g;
 		current_b += delta_b;
 
-		Palette_RGB[i] = RGB(current_color.R, current_color.G, current_color.B);
+		Palette_RGB[start_index + i] = RGB(current_color.R, current_color.G, current_color.B);
 	}
 }
 //------------------------------------------------------------------------------------------------------------
