@@ -520,12 +520,12 @@ void Draw_Mandelbrot(HDC frame_dc)
 {
 	int i;
 	int x, y;
-	float x_0, x_n, x_n1;
-	float y_0, y_n, y_n1;
-	float center_x = -1.0f + 0.005606f;
-	float center_y = -0.3f;
-	float x_scale = (float)DC.Buf_Size.Width / (float)DC.Buf_Size.Height * Global_Scale;
-	float distance;
+	double x_0, x_n, x_n1;
+	double y_0, y_n, y_n1;
+	double center_x = -1.0 + 0.005606;
+	double center_y = -0.3;
+	double x_scale = (double)DC.Buf_Size.Width / (double)DC.Buf_Size.Height * Global_Scale;
+	double distance;
 	int color;
 	
 	//unsigned long long start_cpu_tick, end_cpu_tick, cpu_ticks;
@@ -534,25 +534,25 @@ void Draw_Mandelbrot(HDC frame_dc)
 
 	for (y = 0; y < DC.Buf_Size.Height; ++y)
 	{
-		y_0 = (float)y / (float)DC.Buf_Size.Height - 0.5f; // y_0 = [-0.5f ... 0.5f)
+		y_0 = (double)y / (double)DC.Buf_Size.Height - 0.5; // y_0 = [-0.5 ... 0.5)
 		y_0 = y_0 * Global_Scale + center_y;
 
 		for (x = 0; x < DC.Buf_Size.Width; x++)
 		{
-			x_0 = (float)x / (float)DC.Buf_Size.Width - 0.5f; // x_0 = [-0.5f ... 0.5f)
+			x_0 = (double)x / (double)DC.Buf_Size.Width - 0.5; // x_0 = [-0.5 ... 0.5)
 			x_0 = x_0 * x_scale + center_x;
 
-			x_n = 0.0f;
-			y_n = 0.0f;
+			x_n = 0.0;
+			y_n = 0.0;
 
 			for (i = 0; i < DC.Colors_Count; i++)
 			{
 				x_n1 = x_n * x_n - y_n * y_n + x_0;
-				y_n1 = 2.0f * x_n * y_n + y_0;
+				y_n1 = 2.0 * x_n * y_n + y_0;
 
 				distance = x_n1 * x_n1 + y_n1 * y_n1;
 
-				if (distance > 4.0f)
+				if (distance > 4.0)
 					break;
 
 				x_n = x_n1;
