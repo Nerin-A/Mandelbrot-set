@@ -345,52 +345,6 @@ void Draw_Mandelbrot(HDC frame_dc)
 	SetPixel(frame_dc, DC.Buf_Size.Width / 2, DC.Buf_Size.Height / 2, RGB(255, 255, 255));
 }
 //------------------------------------------------------------------------------------------------------------
-void Draw_Monochrome_Palette(HDC hdc)
-{
-	int i;
-	const int iterations_count = 100;
-	HPEN pen;
-	HBRUSH brush;
-	double x_pos = 0.0;
-	double bar_width = (double)DC.Buf_Size.Width / (double)iterations_count;
-
-	for (i = 0; i < iterations_count; i++)
-	{
-		pen = CreatePen(PS_SOLID, 0, RGB(i, i, i));
-		brush = CreateSolidBrush(RGB(i, i, i));
-
-		SelectObject(hdc, pen);
-		SelectObject(hdc, brush);
-
-		Rectangle(hdc, (int)x_pos, 0, (int)(x_pos + bar_width), DC.Buf_Size.Height / 2);
-
-		x_pos += bar_width;
-	}
-}
-//------------------------------------------------------------------------------------------------------------
-void Draw_Colorful_Palette(HDC hdc)
-{
-	int i;
-	const int iterations_count = 100;
-	HPEN pen;
-	HBRUSH brush;
-	double x_pos = 0.0;
-	double bar_width = (double)DC.Buf_Size.Width / (double)iterations_count;
-
-	for (i = 0; i < iterations_count; i++)
-	{
-		pen = CreatePen(PS_SOLID, 0, RGB(i, i, i));
-		brush = CreateSolidBrush(RGB(i, i, i));
-
-		SelectObject(hdc, pen);
-		SelectObject(hdc, brush);
-
-		Rectangle(hdc, (int)x_pos, DC.Buf_Size.Height / 2, (int)(x_pos + bar_width), DC.Buf_Size.Height);
-
-		x_pos += bar_width;
-	}
-}
-//------------------------------------------------------------------------------------------------------------
 int Color_To_RGB(int color)
 {// Parameters:
  // color = [0 .. 360) = H for HSV, S = 1.0, V = 1.0
@@ -403,7 +357,7 @@ int Color_To_RGB(int color)
 
 	h = color / 60; // h = [0 .. 5]
 
-	a = double (color % 60) / 60.0; // a = [0 .. 1.0)
+	a = double(color % 60) / 60.0; // a = [0 .. 1.0)
 
 	v_inc = (unsigned char)(a * 255.0);
 	v_dec = (unsigned char)((1.0 - a) * 255.0);
@@ -451,6 +405,58 @@ int Color_To_RGB(int color)
 	}
 
 	return RGB(r, g, b);
+}
+//------------------------------------------------------------------------------------------------------------
+void Draw_Monochrome_Palette(HDC hdc)
+{
+	int i;
+	const int iterations_count = 100;
+	HPEN pen;
+	HBRUSH brush;
+	double x_pos = 0.0;
+	double bar_width = (double)DC.Buf_Size.Width / (double)iterations_count;
+
+	for (i = 0; i < iterations_count; i++)
+	{
+		pen = CreatePen(PS_SOLID, 0, RGB(i, i, i));
+		brush = CreateSolidBrush(RGB(i, i, i));
+
+		SelectObject(hdc, pen);
+		SelectObject(hdc, brush);
+
+		Rectangle(hdc, (int)x_pos, 0, (int)(x_pos + bar_width), DC.Buf_Size.Height / 2);
+
+		x_pos += bar_width;
+	}
+}
+//------------------------------------------------------------------------------------------------------------
+void Draw_Colorful_Palette(HDC hdc)
+{
+	int i;
+	const int iterations_count = 100;
+	HPEN pen;
+	HBRUSH brush;
+	int rgb_color;
+	int color_angle;
+	double x_pos = 0.0;
+	double bar_width = (double)DC.Buf_Size.Width / (double)iterations_count;
+
+	for (i = 0; i < iterations_count; i++)
+	{
+		color_angle = (int)((double)i / (double)iterations_count * 360.0);
+
+		rgb_color = Color_To_RGB(color_angle);
+
+		pen = CreatePen(PS_SOLID, 0, rgb_color);
+		brush = CreateSolidBrush(rgb_color);
+
+		SelectObject(hdc, pen);
+		SelectObject(hdc, brush);
+
+		Rectangle(hdc, (int)x_pos, DC.Buf_Size.Height / 2, (int)(x_pos + bar_width), DC.Buf_Size.Height);
+
+		x_pos += bar_width;
+	}
 }
 //------------------------------------------------------------------------------------------------------------
 void On_Paint(HWND hwnd)
