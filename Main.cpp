@@ -112,6 +112,7 @@ char* AsFrame_DC::Get_Buf()
 // Global Variables:
 //float Global_Scale = 0.001f;
 float Global_Scale = 1.0f;
+const int Mandelbrot_Iterations_Count = 100;
 
 AsFrame_DC DC;
 HINSTANCE hInst;                                // current instance
@@ -286,7 +287,6 @@ void Draw_Mandelbrot(HDC frame_dc)
 {
 	int i;
 	int x, y;
-	const int iterations_count = 100;
 	float x_0, x_n, x_n1;
 	float y_0, y_n, y_n1;
 	float center_x = -1.0f + 0.005606f;
@@ -312,7 +312,7 @@ void Draw_Mandelbrot(HDC frame_dc)
 			x_n = 0.0f;
 			y_n = 0.0f;
 
-			for (i = 0; i < iterations_count; i++)
+			for (i = 0; i < Mandelbrot_Iterations_Count; i++)
 			{
 				x_n1 = x_n * x_n - y_n * y_n + x_0;
 				y_n1 = 2.0f * x_n * y_n + y_0;
@@ -326,7 +326,7 @@ void Draw_Mandelbrot(HDC frame_dc)
 				y_n = y_n1;
 			}
 
-			if (i == iterations_count)
+			if (i == Mandelbrot_Iterations_Count)
 				color = 0;
 			else
 				color = i * 5 / 2;
@@ -410,13 +410,12 @@ int Color_To_RGB(int color)
 void Draw_Monochrome_Palette(HDC hdc)
 {
 	int i;
-	const int iterations_count = 100;
 	HPEN pen;
 	HBRUSH brush;
 	double x_pos = 0.0;
-	double bar_width = (double)DC.Buf_Size.Width / (double)iterations_count;
+	double bar_width = (double)DC.Buf_Size.Width / (double)Mandelbrot_Iterations_Count;
 
-	for (i = 0; i < iterations_count; i++)
+	for (i = 0; i < Mandelbrot_Iterations_Count; i++)
 	{
 		pen = CreatePen(PS_SOLID, 0, RGB(i, i, i));
 		brush = CreateSolidBrush(RGB(i, i, i));
@@ -430,20 +429,38 @@ void Draw_Monochrome_Palette(HDC hdc)
 	}
 }
 //------------------------------------------------------------------------------------------------------------
+void Create_Colorful_Palette(HDC hdc)
+{
+	int i;
+	HPEN pen;
+	HBRUSH brush;
+	int rgb_color;
+	int color_angle;
+
+	for (i = 0; i < Mandelbrot_Iterations_Count; i++)
+	{
+		color_angle = (int)((double)i / (double)Mandelbrot_Iterations_Count * 360.0);
+
+		rgb_color = Color_To_RGB(color_angle);
+
+		pen = CreatePen(PS_SOLID, 0, rgb_color);
+		brush = CreateSolidBrush(rgb_color);
+	}
+}
+//------------------------------------------------------------------------------------------------------------
 void Draw_Colorful_Palette(HDC hdc)
 {
 	int i;
-	const int iterations_count = 100;
 	HPEN pen;
 	HBRUSH brush;
 	int rgb_color;
 	int color_angle;
 	double x_pos = 0.0;
-	double bar_width = (double)DC.Buf_Size.Width / (double)iterations_count;
+	double bar_width = (double)DC.Buf_Size.Width / (double)Mandelbrot_Iterations_Count;
 
-	for (i = 0; i < iterations_count; i++)
+	for (i = 0; i < Mandelbrot_Iterations_Count; i++)
 	{
-		color_angle = (int)((double)i / (double)iterations_count * 360.0);
+		color_angle = (int)((double)i / (double)Mandelbrot_Iterations_Count * 360.0);
 
 		rgb_color = Color_To_RGB(color_angle);
 
