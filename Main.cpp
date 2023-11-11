@@ -50,7 +50,9 @@ AsFrame_DC::AsFrame_DC()
 	White_Pen = CreatePen(PS_SOLID, 0, RGB(255, 255, 255) );
 
 	//Create_Colorful_Palette();
-	Create_Web_Palette();
+	//Create_Web_Palette();
+	Two_Colors_Palette(SRGB (255, 127, 63), SRGB(127, 63, 0));
+
 }
 //------------------------------------------------------------------------------------------------------------
 HDC AsFrame_DC::Get_DC(HWND hwnd, HDC hdc)
@@ -154,6 +156,11 @@ void AsFrame_DC::Create_Web_Palette()
 
 		default_color += 0x00151515;
 	}
+}
+//------------------------------------------------------------------------------------------------------------
+void AsFrame_DC::Two_Colors_Palette(const SRGB &color_1, const SRGB &color_2)
+{
+
 }
 //------------------------------------------------------------------------------------------------------------
 void AsFrame_DC::Draw_Colorful_Palette(HDC hdc)

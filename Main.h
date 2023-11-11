@@ -3,6 +3,18 @@
 #include "resource.h"
 #include "framework.h"
 //------------------------------------------------------------------------------------------------------------ 
+struct SRGB
+{
+	SRGB(unsigned char r, unsigned char g, unsigned char b)
+		: R(r), G(g), B(b)
+	{
+
+	}
+
+
+	unsigned char R, G, B;
+};
+//------------------------------------------------------------------------------------------------------------
 struct SPoint
 {
 	SPoint();
@@ -34,6 +46,7 @@ public:
 	char* Get_Buf();
 	void Create_Colorful_Palette();
 	void Create_Web_Palette();
+	void Two_Colors_Palette(const SRGB& color_1, const SRGB& color_2);
 	void Draw_Colorful_Palette(HDC hdc);
 	void Draw_Web_Palette(HDC hdc);
 	void Draw_Monochrome_Palette(HDC hdc);
