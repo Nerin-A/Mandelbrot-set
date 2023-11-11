@@ -32,8 +32,9 @@ public:
 	AsFrame_DC();
 	HDC Get_DC(HWND hwnd, HDC hdc);
 	char* Get_Buf();
-	void Create_Colorful_Palette(HDC hdc);
+	void Create_Colorful_Palette();
 	void Draw_Colorful_Palette(HDC hdc);
+	void Draw_Monochrome_Palette(HDC hdc);
 
 	//int Width, Height;
 	SSize Buf_Size;

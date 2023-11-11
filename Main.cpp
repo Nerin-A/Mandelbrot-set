@@ -48,6 +48,8 @@ AsFrame_DC::AsFrame_DC()
 {
 	BG_Brush = CreateSolidBrush(RGB(0, 0, 0));
 	White_Pen = CreatePen(PS_SOLID, 0, RGB(255, 255, 255) );
+
+	Create_Colorful_Palette();
 }
 //------------------------------------------------------------------------------------------------------------
 HDC AsFrame_DC::Get_DC(HWND hwnd, HDC hdc)
@@ -102,7 +104,7 @@ char* AsFrame_DC::Get_Buf()
 	return Bitmap_Buffer;
 }
 //------------------------------------------------------------------------------------------------------------
-void AsFrame_DC::Create_Colorful_Palette(HDC hdc)
+void AsFrame_DC::Create_Colorful_Palette()
 {
 	int i;
 	int rgb_color;
@@ -123,14 +125,36 @@ void AsFrame_DC::Draw_Colorful_Palette(HDC hdc)
 {
 	int i;
 	double x_pos = 0.0;
-	double bar_width = (double)DC.Buf_Size.Width / (double)Colors_Count;
+	double bar_width = (double)Buf_Size.Width / (double)Colors_Count;
 
 	for (i = 0; i < Colors_Count; i++)
 	{
 		SelectObject(hdc, Palette_Pens[i]);
 		SelectObject(hdc, Palette_Brushes[i]);
 
-		Rectangle(hdc, (int)x_pos, DC.Buf_Size.Height / 2, (int)(x_pos + bar_width), DC.Buf_Size.Height);
+		Rectangle(hdc, (int)x_pos, Buf_Size.Height / 2, (int)(x_pos + bar_width), Buf_Size.Height);
+
+		x_pos += bar_width;
+	}
+}
+//------------------------------------------------------------------------------------------------------------
+void AsFrame_DC::Draw_Monochrome_Palette(HDC hdc)
+{
+	int i;
+	HPEN pen;
+	HBRUSH brush;
+	double x_pos = 0.0;
+	double bar_width = (double)Buf_Size.Width / (double)Colors_Count;
+
+	for (i = 0; i < Colors_Count; i++)
+	{
+		pen = CreatePen(PS_SOLID, 0, RGB(i, i, i));
+		brush = CreateSolidBrush(RGB(i, i, i));
+
+		SelectObject(hdc, pen);
+		SelectObject(hdc, brush);
+
+		Rectangle(hdc, (int)x_pos, 0, (int)(x_pos + bar_width), Buf_Size.Height / 2);
 
 		x_pos += bar_width;
 	}
@@ -407,7 +431,7 @@ void Draw_Mandelbrot(HDC frame_dc)
 			x_n = 0.0f;
 			y_n = 0.0f;
 
-			for (i = 0; i < Colors_Count; i++)
+			for (i = 0; i < DC.Colors_Count; i++)
 			{
 				x_n1 = x_n * x_n - y_n * y_n + x_0;
 				y_n1 = 2.0f * x_n * y_n + y_0;
@@ -421,7 +445,7 @@ void Draw_Mandelbrot(HDC frame_dc)
 				y_n = y_n1;
 			}
 
-			if (i == Colors_Count)
+			if (i == DC.Colors_Count)
 				color = 0;
 			else
 				color = i * 5 / 2;
@@ -438,28 +462,6 @@ void Draw_Mandelbrot(HDC frame_dc)
 	// so using WinAPI RELEASE mode is 1.22 times faster and using Asm RELEASE mode is TODO times faster
 	
 	SetPixel(frame_dc, DC.Buf_Size.Width / 2, DC.Buf_Size.Height / 2, RGB(255, 255, 255));
-}
-//------------------------------------------------------------------------------------------------------------
-void Draw_Monochrome_Palette(HDC hdc)
-{
-	int i;
-	HPEN pen;
-	HBRUSH brush;
-	double x_pos = 0.0;
-	double bar_width = (double)DC.Buf_Size.Width / (double)Colors_Count;
-
-	for (i = 0; i < Colors_Count; i++)
-	{
-		pen = CreatePen(PS_SOLID, 0, RGB(i, i, i));
-		brush = CreateSolidBrush(RGB(i, i, i));
-
-		SelectObject(hdc, pen);
-		SelectObject(hdc, brush);
-
-		Rectangle(hdc, (int)x_pos, 0, (int)(x_pos + bar_width), DC.Buf_Size.Height / 2);
-
-		x_pos += bar_width;
-	}
 }
 //------------------------------------------------------------------------------------------------------------
 void On_Paint(HWND hwnd)
@@ -480,7 +482,7 @@ void On_Paint(HWND hwnd)
 
 	//Draw_Mandelbrot(frame_dc);
 
-	Draw_Monochrome_Palette(frame_dc);
+	DC.Draw_Monochrome_Palette(frame_dc);
 	DC.Draw_Colorful_Palette(frame_dc);
 
 	//InvalidateRect(hwnd, &ps.rcPaint, FALSE);
