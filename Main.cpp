@@ -506,7 +506,7 @@ void Draw_Mandelbrot(HDC frame_dc)
 			if (i == DC.Colors_Count)
 				color = 0;
 			else
-				color = DC.Palette_RGB[i];
+				color = DC.Palette_Web[i];
 
 			SetPixel(frame_dc, x, y, color);
 		}
@@ -538,13 +538,13 @@ void On_Paint(HWND hwnd)
 
 	Global_Scale /= 2.0f;
 
-	//Draw_Mandelbrot(frame_dc);
+	Draw_Mandelbrot(frame_dc);
 
 	//DC.Draw_Monochrome_Palette(frame_dc);
 	//DC.Draw_Colorful_Palette(frame_dc);
-	DC.Draw_Web_Palette(frame_dc);
+	//DC.Draw_Web_Palette(frame_dc);
 
-	//InvalidateRect(hwnd, &ps.rcPaint, FALSE);
+	InvalidateRect(hwnd, &ps.rcPaint, FALSE);
 
 	BitBlt(hdc, 0, 0, DC.Buf_Size.Width, DC.Buf_Size.Height, frame_dc, 0, 0, SRCCOPY);
 

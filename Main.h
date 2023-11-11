@@ -43,10 +43,10 @@ public:
 	HBRUSH BG_Brush;
 	HPEN White_Pen;
 
-	static const int Colors_Count = 100;
+	static const int Colors_Count = 96;
 
 	int Palette_RGB[Colors_Count];
-	int Palette_Web[96];
+	int Palette_Web[Colors_Count];
 
 private:
 	int Color_To_RGB(int color);
