@@ -113,8 +113,9 @@ void AsFrame_DC::Create_Colorful_Palette()
 	for (i = 0; i < Colors_Count; i++)
 	{
 		color_angle = (int)((double)i / (double)Colors_Count * 360.0);
-
 		rgb_color = Color_To_RGB(color_angle);
+
+		Palette_RGB[i] = rgb_color;
 
 		Palette_Pens[i] = CreatePen(PS_SOLID, 0, rgb_color);
 		Palette_Brushes[i] = CreateSolidBrush(rgb_color);
@@ -412,7 +413,7 @@ void Draw_Mandelbrot(HDC frame_dc)
 	float center_y = -0.3f;
 	float x_scale = (float)DC.Buf_Size.Width / (float)DC.Buf_Size.Height * Global_Scale;
 	float distance;
-	unsigned char color;
+	int color;
 	
 	//unsigned long long start_cpu_tick, end_cpu_tick, cpu_ticks;
 
@@ -448,9 +449,9 @@ void Draw_Mandelbrot(HDC frame_dc)
 			if (i == DC.Colors_Count)
 				color = 0;
 			else
-				color = i * 5 / 2;
+				color = DC.Palette_RGB[i];
 
-			SetPixel(frame_dc, x, y, RGB(color, color, color));
+			SetPixel(frame_dc, x, y, color);
 		}
 	}
 
@@ -480,12 +481,12 @@ void On_Paint(HWND hwnd)
 
 	Global_Scale /= 2.0f;
 
-	//Draw_Mandelbrot(frame_dc);
+	Draw_Mandelbrot(frame_dc);
 
-	DC.Draw_Monochrome_Palette(frame_dc);
-	DC.Draw_Colorful_Palette(frame_dc);
+	//DC.Draw_Monochrome_Palette(frame_dc);
+	//DC.Draw_Colorful_Palette(frame_dc);
 
-	//InvalidateRect(hwnd, &ps.rcPaint, FALSE);
+	InvalidateRect(hwnd, &ps.rcPaint, FALSE);
 
 	BitBlt(hdc, 0, 0, DC.Buf_Size.Width, DC.Buf_Size.Height, frame_dc, 0, 0, SRCCOPY);
 

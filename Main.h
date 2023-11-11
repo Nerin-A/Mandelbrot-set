@@ -43,6 +43,8 @@ public:
 
 	static const int Colors_Count = 100;
 
+	int Palette_RGB[Colors_Count];
+
 private:
 	int Color_To_RGB(int color);
 
