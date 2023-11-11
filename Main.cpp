@@ -522,7 +522,7 @@ void Draw_Mandelbrot(HDC frame_dc)
 	int x, y;
 	double x_0, x_n, x_n1;
 	double y_0, y_n, y_n1;
-	double center_x = -1.0 + 0.005606;
+	double center_x = -0.99439399990001;
 	double center_y = -0.3;
 	double x_scale = (double)DC.Buf_Size.Width / (double)DC.Buf_Size.Height * Global_Scale;
 	double distance;
@@ -592,7 +592,8 @@ void On_Paint(HWND hwnd)
 	//	Clear_Screen(frame_dc);
 	// Draw_Line(frame_dc);
 
-	Global_Scale /= 2.0f;
+	Global_Scale /= 2.0;
+	//Global_Scale = 0.00000000000001;
 
 	Draw_Mandelbrot(frame_dc);
 
