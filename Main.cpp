@@ -345,7 +345,7 @@ int AsFrame_DC::Color_To_RGB(int color)
 
 // Global Variables:
 //float Global_Scale = 0.001f;
-float Global_Scale = 1.0f;
+double Global_Scale = 1.0f;
 
 AsFrame_DC DC;
 HINSTANCE hInst;                                // current instance

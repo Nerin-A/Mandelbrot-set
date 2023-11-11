@@ -57,7 +57,7 @@ public:
 	HBRUSH BG_Brush;
 	HPEN White_Pen;
 
-	static const int Colors_Count = 100;
+	static const int Colors_Count = 200;
 
 	int Palette_RGB[Colors_Count];
 	int Palette_Web[Colors_Count];
