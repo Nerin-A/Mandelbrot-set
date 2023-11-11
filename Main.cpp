@@ -391,6 +391,68 @@ void Draw_Colorful_Palette(HDC hdc)
 	}
 }
 //------------------------------------------------------------------------------------------------------------
+int Color_To_RGB(int color)
+{// Parameters:
+ // color = [0 .. 360) = H for HSV, S = 1.0, V = 1.0
+ // Return: RGB
+
+	unsigned char r, g, b;
+	unsigned char v_inc, v_dec;
+	int h;
+	double a;
+
+	h = color / 60; // h = [0 .. 5]
+
+	a = double (color % 60) / 60.0; // a = [0 .. 1.0)
+
+	v_inc = (unsigned char)(a * 255.0);
+	v_dec = (unsigned char)((1.0 - a) * 255.0);
+
+	switch (h)
+	{
+	case 0:
+		r = 255;
+		g = v_inc;
+		b = 0;
+		break;
+
+	case 1:
+		r = v_dec;
+		g = 255;
+		b = 0;
+		break;
+
+	case 2:
+		r = 0;
+		g = 255;
+		b = v_inc;
+		break;
+
+	case 3:
+		r = 0;
+		g = v_dec;
+		b = 255;
+		break;
+
+	case 4:
+		r = v_inc;
+		g = 0;
+		b = 255;
+		break;
+
+	case 5:
+		r = 255;
+		g = 0;
+		b = v_dec;
+		break;
+
+	default:
+		throw 13;
+	}
+
+	return RGB(r, g, b);
+}
+//------------------------------------------------------------------------------------------------------------
 void On_Paint(HWND hwnd)
 {
 	HDC hdc, frame_dc;
