@@ -125,16 +125,34 @@ void AsFrame_DC::Create_Colorful_Palette()
 //------------------------------------------------------------------------------------------------------------
 void AsFrame_DC::Create_Web_Palette()
 {
-	int i;
+	int i, j;
+	int position = 0;
 	unsigned char r, g, b;
+	unsigned int default_color = 0;
 
-	for (i = 0; i < 216; i++)
+	for (i = 0; i < 12; i++)
 	{
-		r = (i % 6) * 0x33;
-		g = ((i / 6) % 6) * 0x33;
-		b = ((i / 36) % 6) * 0x33;
+		for (j = 0; j < 8; j++)
+		{
+			if (j & 1)
+				r = 21;
+			else
+				r = 0;
 
-		Palette_Web[i] = RGB(r, g, b);
+			if (j & 2)
+				g = 21;
+			else
+				g = 0;
+
+			if (j & 4)
+				b = 21;
+			else
+				b = 0;
+
+			Palette_Web[position++] = default_color + RGB(r, g, b);
+		}
+
+		default_color += 0x00151515;
 	}
 }
 //------------------------------------------------------------------------------------------------------------
