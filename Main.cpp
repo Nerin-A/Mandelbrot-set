@@ -51,7 +51,7 @@ AsFrame_DC::AsFrame_DC()
 
 	//Create_Colorful_Palette();
 	//Create_Web_Palette();
-	Two_Colors_Palette(SRGB (255, 127, 63), SRGB(127, 63, 0));
+	Create_Two_Colors_Palette(SRGB (255, 127, 63), SRGB(127, 63, 0));
 
 }
 //------------------------------------------------------------------------------------------------------------
@@ -158,7 +158,7 @@ void AsFrame_DC::Create_Web_Palette()
 	}
 }
 //------------------------------------------------------------------------------------------------------------
-void AsFrame_DC::Two_Colors_Palette(const SRGB &color_1, const SRGB &color_2)
+void AsFrame_DC::Create_Two_Colors_Palette(const SRGB &color_1, const SRGB &color_2)
 {
 	int i;
 	double current_r, current_g, current_b;
@@ -175,9 +175,9 @@ void AsFrame_DC::Two_Colors_Palette(const SRGB &color_1, const SRGB &color_2)
 
 	for (i = 0; i < Colors_Count; i++)
 	{
-		current_color.R += (unsigned char)current_r;
-		current_color.G += (unsigned char)current_g;
-		current_color.B += (unsigned char)current_b;
+		current_color.R = (unsigned char)current_r;
+		current_color.G = (unsigned char)current_g;
+		current_color.B = (unsigned char)current_b;
 
 		current_r += delta_r;
 		current_g += delta_g;
@@ -225,6 +225,30 @@ void AsFrame_DC::Draw_Web_Palette(HDC hdc)
 
 		x_pos += bar_width;
 	}
+}
+//------------------------------------------------------------------------------------------------------------
+void AsFrame_DC::Draw_Multi_Color_Palette(HDC hdc)
+{
+	int i;
+	//unsigned char len = sizeof(Palette_RGB) / sizeof(Palette_RGB[0]);
+	HPEN pen;
+	HBRUSH brush;
+	double x_pos = 0.0;
+	double bar_width = (double)Buf_Size.Width / (double)Colors_Count;
+
+	for (i = 0; i < Colors_Count; i++)
+	{
+		pen = CreatePen(PS_SOLID, 0, Palette_RGB[i]);
+		brush = CreateSolidBrush(Palette_RGB[i]);
+
+		SelectObject(hdc, pen);
+		SelectObject(hdc, brush);
+
+		Rectangle(hdc, (int)x_pos, Buf_Size.Height / 2, (int)(x_pos + bar_width), Buf_Size.Height);
+
+		x_pos += bar_width;
+	}
+
 }
 //------------------------------------------------------------------------------------------------------------
 void AsFrame_DC::Draw_Monochrome_Palette(HDC hdc)
@@ -569,13 +593,14 @@ void On_Paint(HWND hwnd)
 
 	Global_Scale /= 2.0f;
 
-	Draw_Mandelbrot(frame_dc);
+	//Draw_Mandelbrot(frame_dc);
 
 	//DC.Draw_Monochrome_Palette(frame_dc);
 	//DC.Draw_Colorful_Palette(frame_dc);
+	DC.Draw_Multi_Color_Palette(frame_dc);
 	//DC.Draw_Web_Palette(frame_dc);
 
-	InvalidateRect(hwnd, &ps.rcPaint, FALSE);
+	//InvalidateRect(hwnd, &ps.rcPaint, FALSE);
 
 	BitBlt(hdc, 0, 0, DC.Buf_Size.Width, DC.Buf_Size.Height, frame_dc, 0, 0, SRCCOPY);
 

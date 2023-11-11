@@ -46,9 +46,10 @@ public:
 	char* Get_Buf();
 	void Create_Colorful_Palette();
 	void Create_Web_Palette();
-	void Two_Colors_Palette(const SRGB& color_1, const SRGB& color_2);
+	void Create_Two_Colors_Palette(const SRGB& color_1, const SRGB& color_2);
 	void Draw_Colorful_Palette(HDC hdc);
 	void Draw_Web_Palette(HDC hdc);
+	void Draw_Multi_Color_Palette(HDC hdc);
 	void Draw_Monochrome_Palette(HDC hdc);
 
 	//int Width, Height;
