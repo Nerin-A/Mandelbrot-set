@@ -118,6 +118,10 @@ AsFrame_DC DC;
 HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
+
+
+HPEN Palette_Pens[Mandelbrot_Iterations_Count];
+HBRUSH Palette_Brushes[Mandelbrot_Iterations_Count];
 //------------------------------------------------------------------------------------------------------------
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -432,8 +436,6 @@ void Draw_Monochrome_Palette(HDC hdc)
 void Create_Colorful_Palette(HDC hdc)
 {
 	int i;
-	HPEN pen;
-	HBRUSH brush;
 	int rgb_color;
 	int color_angle;
 
@@ -443,32 +445,21 @@ void Create_Colorful_Palette(HDC hdc)
 
 		rgb_color = Color_To_RGB(color_angle);
 
-		pen = CreatePen(PS_SOLID, 0, rgb_color);
-		brush = CreateSolidBrush(rgb_color);
+		Palette_Pens[i] = CreatePen(PS_SOLID, 0, rgb_color);
+		Palette_Brushes[i] = CreateSolidBrush(rgb_color);
 	}
 }
 //------------------------------------------------------------------------------------------------------------
 void Draw_Colorful_Palette(HDC hdc)
 {
 	int i;
-	HPEN pen;
-	HBRUSH brush;
-	int rgb_color;
-	int color_angle;
 	double x_pos = 0.0;
 	double bar_width = (double)DC.Buf_Size.Width / (double)Mandelbrot_Iterations_Count;
 
 	for (i = 0; i < Mandelbrot_Iterations_Count; i++)
 	{
-		color_angle = (int)((double)i / (double)Mandelbrot_Iterations_Count * 360.0);
-
-		rgb_color = Color_To_RGB(color_angle);
-
-		pen = CreatePen(PS_SOLID, 0, rgb_color);
-		brush = CreateSolidBrush(rgb_color);
-
-		SelectObject(hdc, pen);
-		SelectObject(hdc, brush);
+		SelectObject(hdc, Palette_Pens[i]);
+		SelectObject(hdc, Palette_Brushes[i]);
 
 		Rectangle(hdc, (int)x_pos, DC.Buf_Size.Height / 2, (int)(x_pos + bar_width), DC.Buf_Size.Height);
 
