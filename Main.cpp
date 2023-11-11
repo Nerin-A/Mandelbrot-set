@@ -160,7 +160,31 @@ void AsFrame_DC::Create_Web_Palette()
 //------------------------------------------------------------------------------------------------------------
 void AsFrame_DC::Two_Colors_Palette(const SRGB &color_1, const SRGB &color_2)
 {
+	int i;
+	double current_r, current_g, current_b;
+	double delta_r, delta_g, delta_b;
+	SRGB current_color(0, 0, 0);
 
+	delta_r = (double)(color_2.R - color_1.R) / (double)Colors_Count;
+	delta_g = (double)(color_2.G - color_1.G) / (double)Colors_Count;
+	delta_b = (double)(color_2.B - color_1.B) / (double)Colors_Count;
+
+	current_r = (double)color_1.R;
+	current_g = (double)color_1.G;
+	current_b = (double)color_1.B;
+
+	for (i = 0; i < Colors_Count; i++)
+	{
+		current_color.R += (unsigned char)current_r;
+		current_color.G += (unsigned char)current_g;
+		current_color.B += (unsigned char)current_b;
+
+		current_r += delta_r;
+		current_g += delta_g;
+		current_b += delta_b;
+
+		Palette_RGB[i] = RGB(current_color.R, current_color.G, current_color.B);
+	}
 }
 //------------------------------------------------------------------------------------------------------------
 void AsFrame_DC::Draw_Colorful_Palette(HDC hdc)
