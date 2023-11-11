@@ -35,6 +35,7 @@ public:
 	void Create_Colorful_Palette();
 	void Create_Web_Palette();
 	void Draw_Colorful_Palette(HDC hdc);
+	void Draw_Web_Palette(HDC hdc);
 	void Draw_Monochrome_Palette(HDC hdc);
 
 	//int Width, Height;
