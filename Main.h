@@ -32,16 +32,25 @@ public:
 	AsFrame_DC();
 	HDC Get_DC(HWND hwnd, HDC hdc);
 	char* Get_Buf();
+	void Create_Colorful_Palette(HDC hdc);
+	void Draw_Colorful_Palette(HDC hdc);
 
 	//int Width, Height;
 	SSize Buf_Size;
 	HBRUSH BG_Brush;
 	HPEN White_Pen;
 
+	static const int Colors_Count = 100;
+
 private:
+	int Color_To_RGB(int color);
+
 	HBITMAP Bitmap;
 	HDC DC;
 	char* Bitmap_Buffer;
+
+	HPEN Palette_Pens[Colors_Count];
+	HBRUSH Palette_Brushes[Colors_Count];
 };
 //------------------------------------------------------------------------------------------------------------
 extern "C" void Asm_Draw(char* video_buffer, SSize size); 

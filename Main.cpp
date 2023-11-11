@@ -102,6 +102,102 @@ char* AsFrame_DC::Get_Buf()
 	return Bitmap_Buffer;
 }
 //------------------------------------------------------------------------------------------------------------
+void AsFrame_DC::Create_Colorful_Palette(HDC hdc)
+{
+	int i;
+	int rgb_color;
+	int color_angle;
+
+	for (i = 0; i < Colors_Count; i++)
+	{
+		color_angle = (int)((double)i / (double)Colors_Count * 360.0);
+
+		rgb_color = Color_To_RGB(color_angle);
+
+		Palette_Pens[i] = CreatePen(PS_SOLID, 0, rgb_color);
+		Palette_Brushes[i] = CreateSolidBrush(rgb_color);
+	}
+}
+//------------------------------------------------------------------------------------------------------------
+void AsFrame_DC::Draw_Colorful_Palette(HDC hdc)
+{
+	int i;
+	double x_pos = 0.0;
+	double bar_width = (double)DC.Buf_Size.Width / (double)Colors_Count;
+
+	for (i = 0; i < Colors_Count; i++)
+	{
+		SelectObject(hdc, Palette_Pens[i]);
+		SelectObject(hdc, Palette_Brushes[i]);
+
+		Rectangle(hdc, (int)x_pos, DC.Buf_Size.Height / 2, (int)(x_pos + bar_width), DC.Buf_Size.Height);
+
+		x_pos += bar_width;
+	}
+}
+//------------------------------------------------------------------------------------------------------------
+int AsFrame_DC::Color_To_RGB(int color)
+{// Parameters:
+ // color = [0 .. 360) = H for HSV, S = 1.0, V = 1.0
+ // Return: RGB
+
+	unsigned char r, g, b;
+	unsigned char v_inc, v_dec;
+	int h;
+	double a;
+
+	h = color / 60; // h = [0 .. 5]
+
+	a = double(color % 60) / 60.0; // a = [0 .. 1.0)
+
+	v_inc = (unsigned char)(a * 255.0);
+	v_dec = (unsigned char)((1.0 - a) * 255.0);
+
+	switch (h)
+	{
+	case 0:
+		r = 255;
+		g = v_inc;
+		b = 0;
+		break;
+
+	case 1:
+		r = v_dec;
+		g = 255;
+		b = 0;
+		break;
+
+	case 2:
+		r = 0;
+		g = 255;
+		b = v_inc;
+		break;
+
+	case 3:
+		r = 0;
+		g = v_dec;
+		b = 255;
+		break;
+
+	case 4:
+		r = v_inc;
+		g = 0;
+		b = 255;
+		break;
+
+	case 5:
+		r = 255;
+		g = 0;
+		b = v_dec;
+		break;
+
+	default:
+		throw 13;
+	}
+
+	return RGB(r, g, b);
+}
+//------------------------------------------------------------------------------------------------------------
 
 
 
@@ -112,16 +208,11 @@ char* AsFrame_DC::Get_Buf()
 // Global Variables:
 //float Global_Scale = 0.001f;
 float Global_Scale = 1.0f;
-const int Mandelbrot_Iterations_Count = 100;
 
 AsFrame_DC DC;
 HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
-
-
-HPEN Palette_Pens[Mandelbrot_Iterations_Count];
-HBRUSH Palette_Brushes[Mandelbrot_Iterations_Count];
 //------------------------------------------------------------------------------------------------------------
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -316,7 +407,7 @@ void Draw_Mandelbrot(HDC frame_dc)
 			x_n = 0.0f;
 			y_n = 0.0f;
 
-			for (i = 0; i < Mandelbrot_Iterations_Count; i++)
+			for (i = 0; i < Colors_Count; i++)
 			{
 				x_n1 = x_n * x_n - y_n * y_n + x_0;
 				y_n1 = 2.0f * x_n * y_n + y_0;
@@ -330,7 +421,7 @@ void Draw_Mandelbrot(HDC frame_dc)
 				y_n = y_n1;
 			}
 
-			if (i == Mandelbrot_Iterations_Count)
+			if (i == Colors_Count)
 				color = 0;
 			else
 				color = i * 5 / 2;
@@ -349,77 +440,15 @@ void Draw_Mandelbrot(HDC frame_dc)
 	SetPixel(frame_dc, DC.Buf_Size.Width / 2, DC.Buf_Size.Height / 2, RGB(255, 255, 255));
 }
 //------------------------------------------------------------------------------------------------------------
-int Color_To_RGB(int color)
-{// Parameters:
- // color = [0 .. 360) = H for HSV, S = 1.0, V = 1.0
- // Return: RGB
-
-	unsigned char r, g, b;
-	unsigned char v_inc, v_dec;
-	int h;
-	double a;
-
-	h = color / 60; // h = [0 .. 5]
-
-	a = double(color % 60) / 60.0; // a = [0 .. 1.0)
-
-	v_inc = (unsigned char)(a * 255.0);
-	v_dec = (unsigned char)((1.0 - a) * 255.0);
-
-	switch (h)
-	{
-	case 0:
-		r = 255;
-		g = v_inc;
-		b = 0;
-		break;
-
-	case 1:
-		r = v_dec;
-		g = 255;
-		b = 0;
-		break;
-
-	case 2:
-		r = 0;
-		g = 255;
-		b = v_inc;
-		break;
-
-	case 3:
-		r = 0;
-		g = v_dec;
-		b = 255;
-		break;
-
-	case 4:
-		r = v_inc;
-		g = 0;
-		b = 255;
-		break;
-
-	case 5:
-		r = 255;
-		g = 0;
-		b = v_dec;
-		break;
-
-	default:
-		throw 13;
-	}
-
-	return RGB(r, g, b);
-}
-//------------------------------------------------------------------------------------------------------------
 void Draw_Monochrome_Palette(HDC hdc)
 {
 	int i;
 	HPEN pen;
 	HBRUSH brush;
 	double x_pos = 0.0;
-	double bar_width = (double)DC.Buf_Size.Width / (double)Mandelbrot_Iterations_Count;
+	double bar_width = (double)DC.Buf_Size.Width / (double)Colors_Count;
 
-	for (i = 0; i < Mandelbrot_Iterations_Count; i++)
+	for (i = 0; i < Colors_Count; i++)
 	{
 		pen = CreatePen(PS_SOLID, 0, RGB(i, i, i));
 		brush = CreateSolidBrush(RGB(i, i, i));
@@ -428,40 +457,6 @@ void Draw_Monochrome_Palette(HDC hdc)
 		SelectObject(hdc, brush);
 
 		Rectangle(hdc, (int)x_pos, 0, (int)(x_pos + bar_width), DC.Buf_Size.Height / 2);
-
-		x_pos += bar_width;
-	}
-}
-//------------------------------------------------------------------------------------------------------------
-void Create_Colorful_Palette(HDC hdc)
-{
-	int i;
-	int rgb_color;
-	int color_angle;
-
-	for (i = 0; i < Mandelbrot_Iterations_Count; i++)
-	{
-		color_angle = (int)((double)i / (double)Mandelbrot_Iterations_Count * 360.0);
-
-		rgb_color = Color_To_RGB(color_angle);
-
-		Palette_Pens[i] = CreatePen(PS_SOLID, 0, rgb_color);
-		Palette_Brushes[i] = CreateSolidBrush(rgb_color);
-	}
-}
-//------------------------------------------------------------------------------------------------------------
-void Draw_Colorful_Palette(HDC hdc)
-{
-	int i;
-	double x_pos = 0.0;
-	double bar_width = (double)DC.Buf_Size.Width / (double)Mandelbrot_Iterations_Count;
-
-	for (i = 0; i < Mandelbrot_Iterations_Count; i++)
-	{
-		SelectObject(hdc, Palette_Pens[i]);
-		SelectObject(hdc, Palette_Brushes[i]);
-
-		Rectangle(hdc, (int)x_pos, DC.Buf_Size.Height / 2, (int)(x_pos + bar_width), DC.Buf_Size.Height);
 
 		x_pos += bar_width;
 	}
@@ -486,7 +481,7 @@ void On_Paint(HWND hwnd)
 	//Draw_Mandelbrot(frame_dc);
 
 	Draw_Monochrome_Palette(frame_dc);
-	Draw_Colorful_Palette(frame_dc);
+	DC.Draw_Colorful_Palette(frame_dc);
 
 	//InvalidateRect(hwnd, &ps.rcPaint, FALSE);
 
