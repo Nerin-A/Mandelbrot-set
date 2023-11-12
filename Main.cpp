@@ -611,6 +611,11 @@ void On_Paint(HWND hwnd)
 	EndPaint(hwnd, &ps);
 }
 //------------------------------------------------------------------------------------------------------------
+void On_Mouse_Left_Key_Down(unsigned int lParam)
+{
+
+}
+//------------------------------------------------------------------------------------------------------------
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
@@ -642,6 +647,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		On_Paint(hWnd);
 	break;
 
+	case WM_LBUTTONDOWN:
+		if (wParam == MK_LBUTTON)
+			On_Mouse_Left_Key_Down((unsigned int)lParam);
+		break;
 
 	case WM_DESTROY:
 		PostQuitMessage(0);
