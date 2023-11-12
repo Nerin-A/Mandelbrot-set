@@ -611,6 +611,19 @@ void On_Paint(HWND hwnd)
 	EndPaint(hwnd, &ps);
 }
 //------------------------------------------------------------------------------------------------------------
+void On_Mouse_Wheel(unsigned int wParam, bool is_up)
+{
+	int wheel_delta = wParam >> 16;
+
+	if (wheel_delta > 0)
+		Global_Scale /= 1.5;
+	else
+		Global_Scale *= 1.5;
+
+	InvalidateRect(hwnd, &window_rectangle, FALSE);
+
+}
+//------------------------------------------------------------------------------------------------------------
 void On_Mouse_Left_Key_Down(HWND hwnd, unsigned int lParam)
 {
 	int x_pos, y_pos;
@@ -667,11 +680,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_PAINT:
 		On_Paint(hWnd);
-	break;
+		break;
 
 	case WM_LBUTTONDOWN:
 		if (wParam == MK_LBUTTON)
 			On_Mouse_Left_Key_Down(hWnd, (unsigned int)lParam);
+		break;	
+	
+	case WM_MOUSEWHEEL:
+		On_Mouse_Wheel((unsigned int)wParam, bool is_up);
 		break;
 
 	case WM_DESTROY:
