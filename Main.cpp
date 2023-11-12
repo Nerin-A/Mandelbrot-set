@@ -208,7 +208,7 @@ void AsFrame_DC::Draw_Colorful_Palette(HDC hdc)
 void AsFrame_DC::Draw_Web_Palette(HDC hdc)
 {
 	int i;
-	unsigned char len = sizeof(Palette_Web) / sizeof(Palette_Web[0]);
+	int len = sizeof(Palette_Web) / sizeof(Palette_Web[0]);
 	HPEN pen;
 	HBRUSH brush;
 	double x_pos = 0.0;
@@ -611,20 +611,31 @@ void On_Paint(HWND hwnd)
 	EndPaint(hwnd, &ps);
 }
 //------------------------------------------------------------------------------------------------------------
-void On_Mouse_Left_Key_Down(unsigned int lParam)
+void On_Mouse_Left_Key_Down(HWND hwnd, unsigned int lParam)
 {
 	int x_pos, y_pos;
 	int window_center_x_pos = DC.Buf_Size.Width / 2;
 	int window_center_y_pos = DC.Buf_Size.Height / 2;
 	double center_x_offset;
 	double center_y_offset;
-
+	double x_ratio_correction = (double)DC.Buf_Size.Width / (double)DC.Buf_Size.Height;
+	RECT window_rectangle;
 
 	x_pos = lParam & 0xffff;
 	y_pos = (lParam >> 16) & 0xffff;
 
-	center_x_offset = (double)(x_pos - window_center_x_pos) / (double)DC.Buf_Size.Width;
+	center_x_offset = ((double)(x_pos - window_center_x_pos) / (double)DC.Buf_Size.Width) * x_ratio_correction;
 	center_y_offset = (double)(y_pos - window_center_y_pos) / (double)DC.Buf_Size.Height;
+
+	Center_X += center_x_offset * Global_Scale;
+	Center_Y += center_y_offset * Global_Scale;
+
+	window_rectangle.left = 0;
+	window_rectangle.top = 0;
+	window_rectangle.right = DC.Buf_Size.Width;
+	window_rectangle.bottom = DC.Buf_Size.Height;
+
+	InvalidateRect(hwnd, &window_rectangle, FALSE);
 }
 //------------------------------------------------------------------------------------------------------------
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -660,7 +671,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_LBUTTONDOWN:
 		if (wParam == MK_LBUTTON)
-			On_Mouse_Left_Key_Down((unsigned int)lParam);
+			On_Mouse_Left_Key_Down(hWnd, (unsigned int)lParam);
 		break;
 
 	case WM_DESTROY:
