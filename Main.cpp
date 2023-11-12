@@ -345,7 +345,11 @@ int AsFrame_DC::Color_To_RGB(int color)
 
 // Global Variables:
 //float Global_Scale = 0.001f;
-double Global_Scale = 1.0f;
+double Global_Scale = 2.0;
+//double Center_X = -0.99439399990001;
+//double Center_Y = -0.3; 
+double Center_X = -0.5;
+double Center_Y = 0.0;
 
 AsFrame_DC DC;
 HINSTANCE hInst;                                // current instance
@@ -522,8 +526,6 @@ void Draw_Mandelbrot(HDC frame_dc)
 	int x, y;
 	double x_0, x_n, x_n1;
 	double y_0, y_n, y_n1;
-	double center_x = -0.99439399990001;
-	double center_y = -0.3;
 	double x_scale = (double)DC.Buf_Size.Width / (double)DC.Buf_Size.Height * Global_Scale;
 	double distance;
 	int color;
@@ -535,12 +537,12 @@ void Draw_Mandelbrot(HDC frame_dc)
 	for (y = 0; y < DC.Buf_Size.Height; ++y)
 	{
 		y_0 = (double)y / (double)DC.Buf_Size.Height - 0.5; // y_0 = [-0.5 ... 0.5)
-		y_0 = y_0 * Global_Scale + center_y;
+		y_0 = y_0 * Global_Scale + Center_Y;
 
 		for (x = 0; x < DC.Buf_Size.Width; x++)
 		{
 			x_0 = (double)x / (double)DC.Buf_Size.Width - 0.5; // x_0 = [-0.5 ... 0.5)
-			x_0 = x_0 * x_scale + center_x;
+			x_0 = x_0 * x_scale + Center_X;
 
 			x_n = 0.0;
 			y_n = 0.0;
@@ -592,7 +594,7 @@ void On_Paint(HWND hwnd)
 	//	Clear_Screen(frame_dc);
 	// Draw_Line(frame_dc);
 
-	Global_Scale /= 2.0;
+	//Global_Scale /= 2.0;
 	//Global_Scale = 0.00000000000001;
 
 	Draw_Mandelbrot(frame_dc);
