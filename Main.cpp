@@ -613,7 +613,18 @@ void On_Paint(HWND hwnd)
 //------------------------------------------------------------------------------------------------------------
 void On_Mouse_Left_Key_Down(unsigned int lParam)
 {
+	int x_pos, y_pos;
+	int window_center_x_pos = DC.Buf_Size.Width / 2;
+	int window_center_y_pos = DC.Buf_Size.Height / 2;
+	double center_x_offset;
+	double center_y_offset;
 
+
+	x_pos = lParam & 0xffff;
+	y_pos = (lParam >> 16) & 0xffff;
+
+	center_x_offset = (double)(x_pos - window_center_x_pos) / (double)DC.Buf_Size.Width;
+	center_y_offset = (double)(y_pos - window_center_y_pos) / (double)DC.Buf_Size.Height;
 }
 //------------------------------------------------------------------------------------------------------------
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
