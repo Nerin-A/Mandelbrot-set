@@ -76,4 +76,5 @@ private:
 extern "C" void Asm_Draw(char* video_buffer, SSize size); 
 extern "C" void Asm_Draw_Line(char* video_buffer, SPoint start_pos, SPoint finish_pos, SBuf_Color buffer_color);
 extern "C" void Asm_Draw_Horizontal_Line(char* video_buffer, SPoint start_pos, unsigned short length, SBuf_Color buffer_color);
+extern "C" void Asm_Set_Pixel(char* video_buffer, SPoint position, SBuf_Color buffer_color);
 //------------------------------------------------------------------------------------------------------------

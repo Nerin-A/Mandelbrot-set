@@ -222,5 +222,16 @@ Asm_Draw_Horizontal_Line proc
 
 Asm_Draw_Horizontal_Line endp
 ;-------------------------------------------------------------------------------------------------------------
+Asm_Set_Pixel proc
+; extern "C" void Asm_Set_Pixel(char* video_buffer, SPoint position, SBuf_Color buffer_color);
+; Parameters
+; RCX = char *video_buffer, 
+; RDX = position
+; R8 = buffer_color
+; Return = void;
 
+	ret
+
+Asm_Set_Pixel endp
+;-------------------------------------------------------------------------------------------------------------
 end
