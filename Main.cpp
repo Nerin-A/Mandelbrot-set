@@ -611,7 +611,19 @@ void On_Paint(HWND hwnd)
 	EndPaint(hwnd, &ps);
 }
 //------------------------------------------------------------------------------------------------------------
-void On_Mouse_Wheel(unsigned int wParam, bool is_up)
+void Invalidate_Window_Rect(HWND hwnd)
+{
+	RECT window_rectangle;
+
+	window_rectangle.left = 0;
+	window_rectangle.top = 0;
+	window_rectangle.right = DC.Buf_Size.Width;
+	window_rectangle.bottom = DC.Buf_Size.Height;
+
+	InvalidateRect(hwnd, &window_rectangle, FALSE);
+}
+//------------------------------------------------------------------------------------------------------------
+void On_Mouse_Wheel(HWND hwnd, int wParam)
 {
 	int wheel_delta = wParam >> 16;
 
@@ -620,11 +632,10 @@ void On_Mouse_Wheel(unsigned int wParam, bool is_up)
 	else
 		Global_Scale *= 1.5;
 
-	InvalidateRect(hwnd, &window_rectangle, FALSE);
-
+	Invalidate_Window_Rect(hwnd);
 }
 //------------------------------------------------------------------------------------------------------------
-void On_Mouse_Left_Key_Down(HWND hwnd, unsigned int lParam)
+void On_Mouse_Left_Key_Down(HWND hwnd, int lParam)
 {
 	int x_pos, y_pos;
 	int window_center_x_pos = DC.Buf_Size.Width / 2;
@@ -632,7 +643,6 @@ void On_Mouse_Left_Key_Down(HWND hwnd, unsigned int lParam)
 	double center_x_offset;
 	double center_y_offset;
 	double x_ratio_correction = (double)DC.Buf_Size.Width / (double)DC.Buf_Size.Height;
-	RECT window_rectangle;
 
 	x_pos = lParam & 0xffff;
 	y_pos = (lParam >> 16) & 0xffff;
@@ -643,12 +653,7 @@ void On_Mouse_Left_Key_Down(HWND hwnd, unsigned int lParam)
 	Center_X += center_x_offset * Global_Scale;
 	Center_Y += center_y_offset * Global_Scale;
 
-	window_rectangle.left = 0;
-	window_rectangle.top = 0;
-	window_rectangle.right = DC.Buf_Size.Width;
-	window_rectangle.bottom = DC.Buf_Size.Height;
-
-	InvalidateRect(hwnd, &window_rectangle, FALSE);
+	Invalidate_Window_Rect(hwnd);
 }
 //------------------------------------------------------------------------------------------------------------
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -688,7 +693,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;	
 	
 	case WM_MOUSEWHEEL:
-		On_Mouse_Wheel((unsigned int)wParam, bool is_up);
+		On_Mouse_Wheel(hWnd, (int)wParam);
 		break;
 
 	case WM_DESTROY:
