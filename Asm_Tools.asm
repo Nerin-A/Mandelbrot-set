@@ -252,4 +252,17 @@ Asm_Set_Pixel proc
 
 Asm_Set_Pixel endp
 ;-------------------------------------------------------------------------------------------------------------
+Asm_Get_Mandelbrot_Index proc
+; extern "C" int  Asm_Get_Mandelbrot_Index(char* video_buffer, double x_0, double y_0, int colors_count);
+; Parameters
+; RCX = char *video_buffer, 
+; RDX = position
+; R8 = buffer_color
+; Return = void;
+
+
+	ret
+
+Asm_Get_Mandelbrot_Index endp
+;-------------------------------------------------------------------------------------------------------------
 end

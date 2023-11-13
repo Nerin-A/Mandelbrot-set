@@ -492,11 +492,11 @@ void Clear_Screen(HDC frame_dc)
 //------------------------------------------------------------------------------------------------------------
 void Draw_Line(HDC frame_dc)
 {
-	int i;
-	char* buf;
-	SBuf_Color buffer_color;
-	SPoint start_point(10, 0);
-	SPoint finish_point(910, 100);
+	//int i;
+	//char* buf;
+	//SBuf_Color buffer_color;
+	//SPoint start_point(10, 0);
+	//SPoint finish_point(910, 100);
 	//unsigned long long start_cpu_tick, end_cpu_tick, cpu_ticks;
 
 	//SelectObject(frame_dc, DC.White_Pen);
@@ -585,7 +585,7 @@ void Draw_Mandelbrot(HDC frame_dc)
 	SetPixel(frame_dc, DC.Buf_Size.Width / 2, DC.Buf_Size.Height / 2, RGB(255, 255, 255));
 }
 //------------------------------------------------------------------------------------------------------------
-int Get_Mandelbrot_Index(double x_0, double y_0)
+int Get_Mandelbrot_Index(double x_0, double y_0, int colors_count)
 {
 	int i;
 	double x_n, x_n1;
@@ -595,7 +595,7 @@ int Get_Mandelbrot_Index(double x_0, double y_0)
 	x_n = 0.0;
 	y_n = 0.0;
 
-	for (i = 0; i < DC.Colors_Count; i++)
+	for (i = 0; i < colors_count; i++)
 	{
 		x_n1 = x_n * x_n - y_n * y_n + x_0;
 		y_n1 = 2.0 * x_n * y_n + y_0;
@@ -614,7 +614,7 @@ int Get_Mandelbrot_Index(double x_0, double y_0)
 //------------------------------------------------------------------------------------------------------------
 void Draw_Mandelbrot_Asm(HDC frame_dc)
 {
-	int i;
+	int i, asm_i;
 	int x, y;
 	double x_scale = (double)DC.Buf_Size.Width / (double)DC.Buf_Size.Height * Global_Scale;
 	double x_0;
@@ -641,7 +641,12 @@ void Draw_Mandelbrot_Asm(HDC frame_dc)
 			x_0 = (double)x / (double)DC.Buf_Size.Width - 0.5; // x_0 = [-0.5 ... 0.5)
 			x_0 = x_0 * x_scale + Center_X;
 
-			i = Get_Mandelbrot_Index(x_0, y_0);
+			i = Get_Mandelbrot_Index(x_0, y_0, DC.Colors_Count);
+
+			asm_i = Asm_Get_Mandelbrot_Index(video_buffer, x_0, y_0, DC.Colors_Count);
+
+			if (i != asm_i)
+				int xyz = 0;
 
 			if (i == DC.Colors_Count)
 				color = 0;
