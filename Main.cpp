@@ -585,19 +585,48 @@ void Draw_Mandelbrot(HDC frame_dc)
 	SetPixel(frame_dc, DC.Buf_Size.Width / 2, DC.Buf_Size.Height / 2, RGB(255, 255, 255));
 }
 //------------------------------------------------------------------------------------------------------------
+int Get_Mandelbrot_Index(double x_0, double y_0)
+{
+	int i;
+	double x_n, x_n1;
+	double y_n, y_n1;
+	double distance;
+
+	x_n = 0.0;
+	y_n = 0.0;
+
+	for (i = 0; i < DC.Colors_Count; i++)
+	{
+		x_n1 = x_n * x_n - y_n * y_n + x_0;
+		y_n1 = 2.0 * x_n * y_n + y_0;
+
+		distance = x_n1 * x_n1 + y_n1 * y_n1;
+
+		if (distance > 4.0)
+			break;
+
+		x_n = x_n1;
+		y_n = y_n1;
+	}
+
+	return i;
+}
+//------------------------------------------------------------------------------------------------------------
 void Draw_Mandelbrot_Asm(HDC frame_dc)
 {
 	int i;
 	int x, y;
-	double x_0, x_n, x_n1;
-	double y_0, y_n, y_n1;
 	double x_scale = (double)DC.Buf_Size.Width / (double)DC.Buf_Size.Height * Global_Scale;
-	double distance;
+	double x_0;
+	double y_0;
 	int color;
 	SBuf_Color buffer_color;
 	char* video_buffer;
 	SPoint position;
 	
+	video_buffer = DC.Get_Buf();
+	buffer_color.Buffer_Size = DC.Buf_Size;
+
 	unsigned long long start_cpu_tick, end_cpu_tick, cpu_ticks;
 
 	start_cpu_tick = __rdtsc();
@@ -612,34 +641,16 @@ void Draw_Mandelbrot_Asm(HDC frame_dc)
 			x_0 = (double)x / (double)DC.Buf_Size.Width - 0.5; // x_0 = [-0.5 ... 0.5)
 			x_0 = x_0 * x_scale + Center_X;
 
-			x_n = 0.0;
-			y_n = 0.0;
-
-			for (i = 0; i < DC.Colors_Count; i++)
-			{
-				x_n1 = x_n * x_n - y_n * y_n + x_0;
-				y_n1 = 2.0 * x_n * y_n + y_0;
-
-				distance = x_n1 * x_n1 + y_n1 * y_n1;
-
-				if (distance > 4.0)
-					break;
-
-				x_n = x_n1;
-				y_n = y_n1;
-			}
+			i = Get_Mandelbrot_Index(x_0, y_0);
 
 			if (i == DC.Colors_Count)
 				color = 0;
 			else
 				color = DC.Palette_RGB[i];
 
-			video_buffer = DC.Get_Buf();
-			buffer_color.Buffer_Size = DC.Buf_Size;
-			buffer_color.Color = color;
-
 			position.X = x;
 			position.Y = y;
+			buffer_color.Color = color;
 
 			Asm_Set_Pixel(video_buffer, position, buffer_color);
 		}
@@ -648,7 +659,7 @@ void Draw_Mandelbrot_Asm(HDC frame_dc)
 	end_cpu_tick = __rdtsc();
 
 	cpu_ticks = end_cpu_tick - start_cpu_tick; 
-	// DEBUG WinAPI ->>> 3 264 438 708 || 3 271 177 618 || 3 219 223 174 || 3 208 083 697 - almost 1 sec on my 3.6Hhz CPU \\\ Asm function ->>> 1 384 816 392 || 1 380 186 107 || 1 384 397 391
+	// DEBUG WinAPI ->>> 3 264 438 708 || 3 271 177 618 || 3 219 223 174 || 3 208 083 697 - almost 1 sec on my 3.6Hhz CPU \\\ Asm function ->>> 1 384 816 392 || 1 380 186 107 || 1 384 397 391 || 1 381 998 887 || 1 376 514 180
 	// RELEASE WinAPI ->>> 2 668 194 145 || 2 663 908 377 || 2 700 979 201 \\ Asm ->>> TODO
 	// so using WinAPI RELEASE mode is 1.22 times faster compared to WinAPI DEBUG mode
 	// and using Asm RELEASE mode is TODO times faster compared to Asm RELEASE mode
@@ -675,8 +686,8 @@ void On_Paint(HWND hwnd)
 	//Global_Scale /= 2.0;
 	//Global_Scale = 0.00000000000001;
 
-	//Draw_Mandelbrot_Asm(frame_dc);
-	Draw_Mandelbrot(frame_dc);
+	Draw_Mandelbrot_Asm(frame_dc);
+	//Draw_Mandelbrot(frame_dc);
 
 	//DC.Draw_Monochrome_Palette(frame_dc);
 	//DC.Draw_Colorful_Palette(frame_dc);
