@@ -598,9 +598,9 @@ void Draw_Mandelbrot_Asm(HDC frame_dc)
 	char* video_buffer;
 	SPoint position;
 	
-	//unsigned long long start_cpu_tick, end_cpu_tick, cpu_ticks;
+	unsigned long long start_cpu_tick, end_cpu_tick, cpu_ticks;
 
-	//start_cpu_tick = __rdtsc();
+	start_cpu_tick = __rdtsc();
 
 	for (y = 0; y < DC.Buf_Size.Height; ++y)
 	{
@@ -645,12 +645,15 @@ void Draw_Mandelbrot_Asm(HDC frame_dc)
 		}
 	}
 
-	//end_cpu_tick = __rdtsc();
+	end_cpu_tick = __rdtsc();
 
-	//cpu_ticks = end_cpu_tick - start_cpu_tick; 
-	// DEBUG WinAPI ->>> 3 264 438 708 || 3 271 177 618 || 3 219 223 174 || 3 208 083 697 - almost 1 sec on my 3.6Hhz CPU \\\ Asm function ->>> TODO
+	cpu_ticks = end_cpu_tick - start_cpu_tick; 
+	// DEBUG WinAPI ->>> 3 264 438 708 || 3 271 177 618 || 3 219 223 174 || 3 208 083 697 - almost 1 sec on my 3.6Hhz CPU \\\ Asm function ->>> 1 384 816 392 || 1 380 186 107 || 1 384 397 391
 	// RELEASE WinAPI ->>> 2 668 194 145 || 2 663 908 377 || 2 700 979 201 \\ Asm ->>> TODO
-	// so using WinAPI RELEASE mode is 1.22 times faster and using Asm RELEASE mode is TODO times faster
+	// so using WinAPI RELEASE mode is 1.22 times faster compared to WinAPI DEBUG mode
+	// and using Asm RELEASE mode is TODO times faster compared to Asm RELEASE mode
+	// DEBUG Asm is 2.37 times faster than WinAPI DEBUG
+	// RELEASE Asm is TODO times faster than WinAPI RELEASE
 	
 	SetPixel(frame_dc, DC.Buf_Size.Width / 2, DC.Buf_Size.Height / 2, RGB(255, 255, 255));
 }
@@ -672,14 +675,15 @@ void On_Paint(HWND hwnd)
 	//Global_Scale /= 2.0;
 	//Global_Scale = 0.00000000000001;
 
-	Draw_Mandelbrot_Asm(frame_dc);
+	//Draw_Mandelbrot_Asm(frame_dc);
+	Draw_Mandelbrot(frame_dc);
 
 	//DC.Draw_Monochrome_Palette(frame_dc);
 	//DC.Draw_Colorful_Palette(frame_dc);
 	//DC.Draw_Multi_Color_Palette(frame_dc);
 	//DC.Draw_Web_Palette(frame_dc);
 
-	//InvalidateRect(hwnd, &ps.rcPaint, FALSE);
+	InvalidateRect(hwnd, &ps.rcPaint, FALSE);
 
 	BitBlt(hdc, 0, 0, DC.Buf_Size.Width, DC.Buf_Size.Height, frame_dc, 0, 0, SRCCOPY);
 
