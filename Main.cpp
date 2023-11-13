@@ -49,10 +49,10 @@ AsFrame_DC::AsFrame_DC()
 	BG_Brush = CreateSolidBrush(RGB(0, 0, 0));
 	White_Pen = CreatePen(PS_SOLID, 0, RGB(255, 255, 255) );
 
-	//Create_Colorful_Palette();
+	Create_Colorful_Palette();
 	//Create_Web_Palette();
-	Create_Two_Colors_Palette(0, SRGB(255, 127, 63), SRGB(0, 127, 63));
-	Create_Two_Colors_Palette(Colors_Count / 2, SRGB(0, 127, 63), SRGB(128, 0, 255));
+	//Create_Two_Colors_Palette(0, SRGB(255, 127, 63), SRGB(0, 127, 63));
+	//Create_Two_Colors_Palette(Colors_Count / 2, SRGB(0, 127, 63), SRGB(128, 0, 255));
 }
 //------------------------------------------------------------------------------------------------------------
 HDC AsFrame_DC::Get_DC(HWND hwnd, HDC hdc)
@@ -111,11 +111,16 @@ void AsFrame_DC::Create_Colorful_Palette()
 {
 	int i;
 	int rgb_color;
-	int color_angle;
+	int color_angle = 0;
 
 	for (i = 0; i < Colors_Count; i++)
 	{
-		color_angle = (int)((double)i / (double)Colors_Count * 360.0);
+		//color_angle = (int)((double)i / (double)Colors_Count * 360.0);
+		color_angle += 13;
+
+		if (color_angle >= 360)
+			color_angle -= 360;
+
 		rgb_color = Color_To_RGB(color_angle);
 
 		Palette_RGB[i] = rgb_color;
