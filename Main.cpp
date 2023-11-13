@@ -534,6 +534,66 @@ void Draw_Mandelbrot(HDC frame_dc)
 	double x_scale = (double)DC.Buf_Size.Width / (double)DC.Buf_Size.Height * Global_Scale;
 	double distance;
 	int color;
+
+	//unsigned long long start_cpu_tick, end_cpu_tick, cpu_ticks;
+
+	//start_cpu_tick = __rdtsc();
+
+	for (y = 0; y < DC.Buf_Size.Height; ++y)
+	{
+		y_0 = (double)y / (double)DC.Buf_Size.Height - 0.5; // y_0 = [-0.5 ... 0.5)
+		y_0 = y_0 * Global_Scale + Center_Y;
+
+		for (x = 0; x < DC.Buf_Size.Width; x++)
+		{
+			x_0 = (double)x / (double)DC.Buf_Size.Width - 0.5; // x_0 = [-0.5 ... 0.5)
+			x_0 = x_0 * x_scale + Center_X;
+
+			x_n = 0.0;
+			y_n = 0.0;
+
+			for (i = 0; i < DC.Colors_Count; i++)
+			{
+				x_n1 = x_n * x_n - y_n * y_n + x_0;
+				y_n1 = 2.0 * x_n * y_n + y_0;
+
+				distance = x_n1 * x_n1 + y_n1 * y_n1;
+
+				if (distance > 4.0)
+					break;
+
+				x_n = x_n1;
+				y_n = y_n1;
+			}
+
+			if (i == DC.Colors_Count)
+				color = 0;
+			else
+				color = DC.Palette_RGB[i];
+
+			SetPixel(frame_dc, x, y, color);
+		}
+	}
+
+	//end_cpu_tick = __rdtsc();
+
+	//cpu_ticks = end_cpu_tick - start_cpu_tick; 
+	// DEBUG WinAPI ->>> 3 264 438 708 || 3 271 177 618 || 3 219 223 174 || 3 208 083 697 - almost 1 sec on my 3.6Hhz CPU \\\ Asm function ->>> TODO
+	// RELEASE WinAPI ->>> 2 668 194 145 || 2 663 908 377 || 2 700 979 201 \\ Asm ->>> TODO
+	// so using WinAPI RELEASE mode is 1.22 times faster and using Asm RELEASE mode is TODO times faster
+
+	SetPixel(frame_dc, DC.Buf_Size.Width / 2, DC.Buf_Size.Height / 2, RGB(255, 255, 255));
+}
+//------------------------------------------------------------------------------------------------------------
+void Draw_Mandelbrot_Asm(HDC frame_dc)
+{
+	int i;
+	int x, y;
+	double x_0, x_n, x_n1;
+	double y_0, y_n, y_n1;
+	double x_scale = (double)DC.Buf_Size.Width / (double)DC.Buf_Size.Height * Global_Scale;
+	double distance;
+	int color;
 	
 	//unsigned long long start_cpu_tick, end_cpu_tick, cpu_ticks;
 
@@ -602,7 +662,7 @@ void On_Paint(HWND hwnd)
 	//Global_Scale /= 2.0;
 	//Global_Scale = 0.00000000000001;
 
-	Draw_Mandelbrot(frame_dc);
+	Draw_Mandelbrot_Asm(frame_dc);
 
 	//DC.Draw_Monochrome_Palette(frame_dc);
 	//DC.Draw_Colorful_Palette(frame_dc);
