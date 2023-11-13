@@ -509,16 +509,16 @@ void Draw_Line(HDC frame_dc)
 	//	LineTo(frame_dc, 910, i + 100);
 	//}
 
-	buf = DC.Get_Buf();
-	buffer_color.Buffer_Size = DC.Buf_Size;
-	buffer_color.Color = 0xffffffff;
+	//buf = DC.Get_Buf();
+	//buffer_color.Buffer_Size = DC.Buf_Size;
+	//buffer_color.Color = 0xffffffff;
 
-	for (i = 0; i < DC.Buf_Size.Height - 100; i++)
-	{
-		start_point.Y = i;
-		finish_point.Y = i + 100;
-		Asm_Draw_Line(buf, start_point, finish_point, buffer_color);
-	}
+	//for (i = 0; i < DC.Buf_Size.Height - 100; i++)
+	//{
+	//	start_point.Y = i;
+	//	finish_point.Y = i + 100;
+	//	Asm_Draw_Line(buf, start_point, finish_point, buffer_color);
+	//}
 
 	//end_cpu_tick = __rdtsc();
 
@@ -636,7 +636,7 @@ void Draw_Mandelbrot_Asm(HDC frame_dc)
 
 			video_buffer = DC.Get_Buf();
 			buffer_color.Buffer_Size = DC.Buf_Size;
-			buffer_color.Color = 0xffffffff;
+			buffer_color.Color = color;
 
 			position.X = x;
 			position.Y = y;
@@ -679,7 +679,7 @@ void On_Paint(HWND hwnd)
 	//DC.Draw_Multi_Color_Palette(frame_dc);
 	//DC.Draw_Web_Palette(frame_dc);
 
-	InvalidateRect(hwnd, &ps.rcPaint, FALSE);
+	//InvalidateRect(hwnd, &ps.rcPaint, FALSE);
 
 	BitBlt(hdc, 0, 0, DC.Buf_Size.Width, DC.Buf_Size.Height, frame_dc, 0, 0, SRCCOPY);
 

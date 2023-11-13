@@ -230,6 +230,24 @@ Asm_Set_Pixel proc
 ; R8 = buffer_color
 ; Return = void;
 
+
+	push rdi
+	push r9
+	push r11
+
+	mov r9, r8 ; R9 = buffer_color
+	mov r11, rcx ; R11 = video_buffer
+
+	; 1. Calculating the address of the pixel
+	call Get_Address ; RDI = address of the position variable in the buffer 
+
+	shr r9, 32 ; R9 = R9D = buffer_color.Color
+	mov [ rdi ], r9d
+
+	pop r11
+	pop r9
+	pop rdi
+
 	ret
 
 Asm_Set_Pixel endp
