@@ -276,6 +276,8 @@ _iteration_start:
 ;	for (i = 0; i < colors_count; i++)
 ;	{
 ;		x_n1 = x_n * x_n - y_n * y_n + x_0;
+	movaps xmm5, xmm3 ; XMM5 = XMM3 = x_n
+	movaps xmm6, xmm4 ; XMM6 = XMM4 = y_n
 ;		y_n1 = 2.0 * x_n * y_n + y_0;
 ;
 ;		distance = x_n1 * x_n1 + y_n1 * y_n1;
