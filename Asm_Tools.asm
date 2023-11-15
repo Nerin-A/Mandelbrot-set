@@ -230,7 +230,6 @@ Asm_Set_Pixel proc
 ; R8 = buffer_color
 ; Return = void;
 
-
 	push rdi
 	push r9
 	push r11
@@ -255,12 +254,45 @@ Asm_Set_Pixel endp
 Asm_Get_Mandelbrot_Index proc
 ; extern "C" int  Asm_Get_Mandelbrot_Index(char* video_buffer, double x_0, double y_0, int colors_count);
 ; Parameters
-; RCX = char *video_buffer, 
-; RDX = position
-; R8 = buffer_color
-; Return = void;
+; RAX = video_buffer
+; XMM1 = [y_0] 
+; XMM0 = [x_0]
+; R8D = colors_count
+; Return = EAX;
+
+;	int i;
+;	double x_n, x_n1;
+;	double y_n, y_n1;
+;	double distance;
+;
+	mov rcx, r8 ; RCX = colors_count = iterations count
+;	x_n = 0.0;
+;	y_n = 0.0;
+	xorpd xmm3, xmm3 ; XMM3 = x_n = 0.0
+	xorpd xmm4, xmm4 ; XMM4 = y_n = 0.0
 
 
+_iteration_start:
+;	for (i = 0; i < colors_count; i++)
+;	{
+;		x_n1 = x_n * x_n - y_n * y_n + x_0;
+;		y_n1 = 2.0 * x_n * y_n + y_0;
+;
+;		distance = x_n1 * x_n1 + y_n1 * y_n1;
+;
+;		if (distance > 4.0)
+;			break;
+;
+;		x_n = x_n1;
+;		y_n = y_n1;
+;	}
+	loop _iteration_start
+;
+;	return i;
+
+
+
+	
 	ret
 
 Asm_Get_Mandelbrot_Index endp
