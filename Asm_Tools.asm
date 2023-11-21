@@ -264,7 +264,9 @@ Asm_Get_Mandelbrot_Index proc
 ;	double x_n, x_n1;
 ;	double y_n, y_n1;
 ;	double distance;
-;
+
+	mov rax, 4
+
 	mov rcx, r8 ; RCX = colors_count = iterations count
 ;	x_n = 0.0;
 ;	y_n = 0.0;
@@ -303,14 +305,15 @@ _iteration_start:
 ;
 ;		if (distance > 4.0)
 ;			break;
-;
+
+	cmpnlesd xmm2, xmm8 ; XMM2 > 4.0 ?
+
 ;		x_n = x_n1;
 ;		y_n = y_n1;
 ;	}
 	loop _iteration_start
 ;
 ;	return i;
-
 
 
 	
