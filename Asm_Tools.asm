@@ -300,6 +300,8 @@ _iteration_start:
 	movaps xmm2, xmm7 ; XMM2 = XMM7 = y_n1
 	mulsd xmm2, xmm2 ; XMM2 = y_n1 * y_n1
 
+	addsd xmm2, xmm6 ; XMM2 = distance = x_n1 * x_n1 + y_n1 * y_n1;
+
 ;
 ;		if (distance > 4.0)
 ;			break;
