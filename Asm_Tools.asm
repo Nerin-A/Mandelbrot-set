@@ -284,11 +284,22 @@ _iteration_start:
 
 	subsd xmm5, xmm6 ; XMM5 = x_n * x_n - y_n * y_n
 
-	addsd xmm5, xmm0 ; XMM5 = x_n * x_n - y_n * y_n + x_0;
+	addsd xmm5, xmm0 ; XMM5 = x_n * x_n - y_n * y_n + x_0 = x_n1
 
 ;		y_n1 = 2.0 * x_n * y_n + y_0;
+	movaps xmm7, xmm3 ; XMM7 = x_n; 
+	mulsd xmm7, xmm4 ; XMM7 = x_n * y_n
+	addsd xmm7, xmm7 ; XMM7 = 2.0 * x_n * y_n
+	addsd xmm7, xmm1 ; XMM7 = 2.0 * x_n * y_n + y_0 = y_n1
 ;
 ;		distance = x_n1 * x_n1 + y_n1 * y_n1;
+
+	movaps xmm6, xmm5 ; XMM6 = x_n1
+	mulsd xmm6, xmm6 ; XMM6 = x_n1 * x_n1	
+	
+	movaps xmm2, xmm7 ; XMM2 = XMM7 = y_n1
+	mulsd xmm2, xmm2 ; XMM2 = y_n1 * y_n1
+
 ;
 ;		if (distance > 4.0)
 ;			break;
