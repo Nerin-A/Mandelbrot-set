@@ -309,6 +309,10 @@ _iteration_start:
 
 	cmpnlesd xmm2, xmm8 ; XMM2 > 4.0 ?
 
+	movmskpd eax, xmm2
+
+
+
 ;		x_n = x_n1;
 ;		y_n = y_n1;
 ;	}
