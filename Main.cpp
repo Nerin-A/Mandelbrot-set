@@ -614,7 +614,7 @@ int Get_Mandelbrot_Index(double x_0, double y_0, int colors_count)
 //------------------------------------------------------------------------------------------------------------
 void Draw_Mandelbrot_Asm(HDC frame_dc)
 {
-	int i, asm_i;
+	int i; //, asm_i;
 	int x, y;
 	double x_scale = (double)DC.Buf_Size.Width / (double)DC.Buf_Size.Height * Global_Scale;
 	double x_0;
@@ -641,12 +641,12 @@ void Draw_Mandelbrot_Asm(HDC frame_dc)
 			x_0 = (double)x / (double)DC.Buf_Size.Width - 0.5; // x_0 = [-0.5 ... 0.5)
 			x_0 = x_0 * x_scale + Center_X;
 
-			i = Get_Mandelbrot_Index(x_0, y_0,  DC.Colors_Count);
+			//i = Get_Mandelbrot_Index(x_0, y_0,  DC.Colors_Count);
 
-			asm_i = Asm_Get_Mandelbrot_Index(video_buffer, x_0, y_0, DC.Colors_Count);
+			i = Asm_Get_Mandelbrot_Index(video_buffer, x_0, y_0, DC.Colors_Count);
 
-			if (i != asm_i)
-				int xyz = 0;
+			//if (i != asm_i)
+			//	int xyz = 0;
 
 			if (i == DC.Colors_Count)
 				color = 0;
@@ -671,7 +671,7 @@ void Draw_Mandelbrot_Asm(HDC frame_dc)
 	// DEBUG Asm is 2.37 times faster than WinAPI DEBUG
 	// RELEASE Asm is TODO times faster than WinAPI RELEASE
 	
-	SetPixel(frame_dc, DC.Buf_Size.Width / 2, DC.Buf_Size.Height / 2, RGB(255, 255, 255));
+	// SetPixel(frame_dc, DC.Buf_Size.Width / 2, DC.Buf_Size.Height / 2, RGB(255, 255, 255));
 }
 //------------------------------------------------------------------------------------------------------------
 void On_Paint(HWND hwnd)

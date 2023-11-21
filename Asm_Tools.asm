@@ -255,9 +255,9 @@ Asm_Get_Mandelbrot_Index proc
 ; extern "C" int  Asm_Get_Mandelbrot_Index(char* video_buffer, double x_0, double y_0, int colors_count);
 ; Parameters
 ; RAX = video_buffer
-; XMM1 = [y_0] 
-; XMM0 = [x_0]
-; R8 = colors_count
+; XMM2 = [y_0] 
+; XMM1 = [x_0]
+; R9 = colors_count
 ; Return = EAX;
 
 	push rcx
@@ -265,7 +265,7 @@ Asm_Get_Mandelbrot_Index proc
 	mov rax, 4
 	cvtsi2sd xmm8, rax ; XMM8 = 4.0 
 
-	mov rcx, r8 ; RCX = colors_count = iterations count
+	mov rcx, r9 ; RCX = colors_count = iterations count
 ;	x_n = 0.0;
 ;	y_n = 0.0;
 	xorpd xmm3, xmm3 ; XMM3 = x_n = 0.0
@@ -276,39 +276,39 @@ _iteration_start:
 ;	for (i = 0; i < colors_count; i++)
 ;	{
 ;		x_n1 = x_n * x_n - y_n * y_n + x_0;
-	movaps xmm5, xmm3 ; XMM5 = XMM3 = x_n
-	movaps xmm6, xmm4 ; XMM6 = XMM4 = y_n
+	movapd xmm5, xmm3 ; XMM5 = XMM3 = x_n
+	movapd xmm6, xmm4 ; XMM6 = XMM4 = y_n
 
 	mulsd xmm5, xmm5 ; XMM5 = x_n * x_n
 	mulsd xmm6, xmm6 ; XMM6 = y_n * y_n
 
 	subsd xmm5, xmm6 ; XMM5 = x_n * x_n - y_n * y_n
 
-	addsd xmm5, xmm0 ; XMM5 = x_n * x_n - y_n * y_n + x_0 = x_n1
+	addsd xmm5, xmm1 ; XMM5 = x_n * x_n - y_n * y_n + x_0 = x_n1
 
 ;		y_n1 = 2.0 * x_n * y_n + y_0;
 	movaps xmm7, xmm3 ; XMM7 = x_n; 
 	mulsd xmm7, xmm4 ; XMM7 = x_n * y_n
 	addsd xmm7, xmm7 ; XMM7 = 2.0 * x_n * y_n
-	addsd xmm7, xmm1 ; XMM7 = 2.0 * x_n * y_n + y_0 = y_n1
+	addsd xmm7, xmm2 ; XMM7 = 2.0 * x_n * y_n + y_0 = y_n1
 ;
 ;		distance = x_n1 * x_n1 + y_n1 * y_n1;
 
 	movaps xmm6, xmm5 ; XMM6 = x_n1
 	mulsd xmm6, xmm6 ; XMM6 = x_n1 * x_n1	
 	
-	movaps xmm2, xmm7 ; XMM2 = XMM7 = y_n1
-	mulsd xmm2, xmm2 ; XMM2 = y_n1 * y_n1
+	movaps xmm0, xmm7 ; XMM7 = y_n1
+	mulsd xmm0, xmm0 ; XMM0 = y_n1 * y_n1
 
-	addsd xmm2, xmm6 ; XMM2 = distance = x_n1 * x_n1 + y_n1 * y_n1;
+	addsd xmm0, xmm6 ; XMM0 = distance = x_n1 * x_n1 + y_n1 * y_n1;
 
 ;
 ;		if (distance > 4.0)
 ;			break;
 
-	cmpnlesd xmm2, xmm8 ; XMM2 > 4.0 ?
+	cmpnlesd xmm0, xmm8 ; XMM0 > 4.0 ?
 
-	movmskpd eax, xmm2
+	movmskpd eax, xmm0
 
 	bt eax, 0
 	jc _got_index
@@ -322,7 +322,7 @@ _iteration_start:
 	loop _iteration_start
 
 _got_index:
-	mov rax, r8
+	mov rax, r9
 	sub rax, rcx ; RAX = EAX = colors_count - ciybt = color_index = iteration at which the loop was interrupted
 ;
 ;	return i;
