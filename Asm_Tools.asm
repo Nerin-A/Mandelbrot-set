@@ -266,6 +266,7 @@ Asm_Get_Mandelbrot_Index proc
 ;	double distance;
 
 	mov rax, 4
+	cvtsi2sd xmm8, rax ; XMM8 = 4.0 
 
 	mov rcx, r8 ; RCX = colors_count = iterations count
 ;	x_n = 0.0;
