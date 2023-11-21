@@ -641,7 +641,7 @@ void Draw_Mandelbrot_Asm(HDC frame_dc)
 			x_0 = (double)x / (double)DC.Buf_Size.Width - 0.5; // x_0 = [-0.5 ... 0.5)
 			x_0 = x_0 * x_scale + Center_X;
 
-			i = Get_Mandelbrot_Index(x_0, y_0, DC.Colors_Count);
+			i = Get_Mandelbrot_Index(x_0, y_0,  DC.Colors_Count);
 
 			asm_i = Asm_Get_Mandelbrot_Index(video_buffer, x_0, y_0, DC.Colors_Count);
 
@@ -740,7 +740,7 @@ void On_Mouse_Left_Key_Down(HWND hwnd, int lParam)
 	double x_ratio_correction = (double)DC.Buf_Size.Width / (double)DC.Buf_Size.Height;
 
 	x_pos = lParam & 0xffff;
-	y_pos = (lParam >> 16) & 0xffff;
+	y_pos = DC.Buf_Size.Height - (lParam >> 16) & 0xffff;
 
 	center_x_offset = ((double)(x_pos - window_center_x_pos) / (double)DC.Buf_Size.Width) * x_ratio_correction;
 	center_y_offset = (double)(y_pos - window_center_y_pos) / (double)DC.Buf_Size.Height;
