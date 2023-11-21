@@ -257,13 +257,10 @@ Asm_Get_Mandelbrot_Index proc
 ; RAX = video_buffer
 ; XMM1 = [y_0] 
 ; XMM0 = [x_0]
-; R8D = colors_count
+; R8 = colors_count
 ; Return = EAX;
 
-;	int i;
-;	double x_n, x_n1;
-;	double y_n, y_n1;
-;	double distance;
+	push rcx
 
 	mov rax, 4
 	cvtsi2sd xmm8, rax ; XMM8 = 4.0 
@@ -311,16 +308,24 @@ _iteration_start:
 
 	movmskpd eax, xmm2
 
-
+	bt eax, 0
+	jc _got_index
 
 ;		x_n = x_n1;
 ;		y_n = y_n1;
+	movaps xmm3, xmm5 ; XMM3 = x_n = x_n1
+	movaps xmm4, xmm7 ; XMM4 = y_n = y_n1;
+	
 ;	}
 	loop _iteration_start
+
+_got_index:
+	mov rax, r8
+	sub rax, rcx ; RAX = EAX = colors_count - ciybt = color_index = iteration at which the loop was interrupted
 ;
 ;	return i;
 
-
+	pop rcx
 	
 	ret
 
