@@ -284,6 +284,8 @@ _iteration_start:
 
 	subsd xmm5, xmm6 ; XMM5 = x_n * x_n - y_n * y_n
 
+	addsd xmm5, xmm0 ; XMM5 = x_n * x_n - y_n * y_n + x_0;
+
 ;		y_n1 = 2.0 * x_n * y_n + y_0;
 ;
 ;		distance = x_n1 * x_n1 + y_n1 * y_n1;
