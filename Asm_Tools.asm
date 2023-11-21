@@ -279,8 +279,10 @@ _iteration_start:
 	movaps xmm5, xmm3 ; XMM5 = XMM3 = x_n
 	movaps xmm6, xmm4 ; XMM6 = XMM4 = y_n
 
-	MULSD xmm5, xmm5 ; XMM5 = x_n * x_n
-	MULSD xmm6, xmm6 ; XMM6 = y_n * y_n
+	mulsd xmm5, xmm5 ; XMM5 = x_n * x_n
+	mulsd xmm6, xmm6 ; XMM6 = y_n * y_n
+
+	subsd xmm5, xmm6 ; XMM5 = x_n * x_n - y_n * y_n
 
 ;		y_n1 = 2.0 * x_n * y_n + y_0;
 ;
