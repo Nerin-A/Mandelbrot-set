@@ -612,6 +612,8 @@ int Get_Mandelbrot_Index(double x_0, double y_0, int colors_count)
 	return i;
 }
 //------------------------------------------------------------------------------------------------------------
+// TODO - have to fix a bug - the function doesn't work in RELEASE mode
+#pragma optimize("", off)
 void Draw_Mandelbrot_Asm(HDC frame_dc)
 {
 	int i; //, asm_i;
@@ -676,6 +678,7 @@ void Draw_Mandelbrot_Asm(HDC frame_dc)
 	
 	SetPixel(frame_dc, DC.Buf_Size.Width / 2, DC.Buf_Size.Height / 2, RGB(255, 255, 255));
 }
+#pragma optimize("", on)
 //------------------------------------------------------------------------------------------------------------
 void On_Paint(HWND hwnd)
 {
@@ -695,6 +698,7 @@ void On_Paint(HWND hwnd)
 	//Global_Scale = 0.00000000000001;
 
 	Draw_Mandelbrot_Asm(frame_dc);
+
 	//Draw_Mandelbrot(frame_dc);
 
 	//DC.Draw_Monochrome_Palette(frame_dc);
