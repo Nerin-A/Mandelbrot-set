@@ -671,8 +671,7 @@ void Draw_Mandelbrot_Asm(HDC frame_dc)
 	// DEBUG Asm is 2.37 times faster than WinAPI DEBUG
 	// RELEASE Asm is TODO times faster than WinAPI RELEASE
 
-	// DEBUG Asm 562 901 795 || 561 991 854 || 562 981 681 
-	// So with the new Asm algorhytm our programs is about 6 times faster!
+	// 562 901 795 || 561 991 854 || 
 	
 	SetPixel(frame_dc, DC.Buf_Size.Width / 2, DC.Buf_Size.Height / 2, RGB(255, 255, 255));
 }
