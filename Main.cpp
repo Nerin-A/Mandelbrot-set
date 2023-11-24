@@ -616,7 +616,7 @@ int Get_Mandelbrot_Index(double x_0, double y_0, int colors_count)
 #pragma optimize("", off)
 void Draw_Mandelbrot_Asm(HDC frame_dc)
 {
-	int i; //, asm_i;
+	int i;
 	int x, y;
 	double x_scale = (double)DC.Buf_Size.Width / (double)DC.Buf_Size.Height * Global_Scale;
 	double x_0;
@@ -647,9 +647,6 @@ void Draw_Mandelbrot_Asm(HDC frame_dc)
 
 			i = Asm_Get_Mandelbrot_Index(video_buffer, x_0, y_0, DC.Colors_Count);
 
-			//if (i != asm_i)
-			//	int xyz = 0;
-
 			if (i == DC.Colors_Count)
 				color = 0;
 			else
@@ -660,6 +657,8 @@ void Draw_Mandelbrot_Asm(HDC frame_dc)
 			buffer_color.Color = color;
 
 			Asm_Set_Pixel(video_buffer, position, buffer_color);
+
+			Asm_Set_Mandelbrot_Point(video_buffer, x_0, y_0, DC.Colors_Count, DC.Palette_RGB);
 		}
 	}
 
