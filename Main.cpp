@@ -16,6 +16,22 @@ SPoint::SPoint(unsigned short x, unsigned short y)
 
 
 
+// SPoint_Double
+//------------------------------------------------------------------------------------------------------------
+SPoint_Double::SPoint_Double()
+	: X(0), Y(0)
+{
+}
+//------------------------------------------------------------------------------------------------------------
+SPoint_Double::SPoint_Double(double x, double y)
+	: X(x), Y(y)
+{
+}
+//------------------------------------------------------------------------------------------------------------
+
+
+
+
 // SSize
 //------------------------------------------------------------------------------------------------------------
 SSize::SSize()
@@ -616,12 +632,9 @@ int Get_Mandelbrot_Index(double x_0, double y_0, int colors_count)
 #pragma optimize("", off)
 void Draw_Mandelbrot_Asm(HDC frame_dc)
 {
-	int i;
 	int x, y;
 	double x_scale = (double)DC.Buf_Size.Width / (double)DC.Buf_Size.Height * Global_Scale;
-	double x_0;
-	double y_0;
-	int color;
+	SPoint_Double x_y_0;
 	SBuf_Color buffer_color;
 	char* video_buffer;
 	SPoint position;
@@ -635,30 +648,30 @@ void Draw_Mandelbrot_Asm(HDC frame_dc)
 
 	for (y = 0; y < DC.Buf_Size.Height; ++y)
 	{
-		y_0 = (double)y / (double)DC.Buf_Size.Height - 0.5; // y_0 = [-0.5 ... 0.5)
-		y_0 = y_0 * Global_Scale + Center_Y;
+		x_y_0.Y = (double)y / (double)DC.Buf_Size.Height - 0.5; // y_0 = [-0.5 ... 0.5)
+		x_y_0.Y = x_y_0.Y * Global_Scale + Center_Y;
 
 		for (x = 0; x < DC.Buf_Size.Width; x++)
 		{
-			x_0 = (double)x / (double)DC.Buf_Size.Width - 0.5; // x_0 = [-0.5 ... 0.5)
-			x_0 = x_0 * x_scale + Center_X;
+			x_y_0.X = (double)x / (double)DC.Buf_Size.Width - 0.5; // x_0 = [-0.5 ... 0.5)
+			x_y_0.X = x_y_0.X * x_scale + Center_X;
 
 			//i = Get_Mandelbrot_Index(x_0, y_0,  DC.Colors_Count);
 
-			i = Asm_Get_Mandelbrot_Index(video_buffer, x_0, y_0, DC.Colors_Count);
+			//i = Asm_Get_Mandelbrot_Index(video_buffer, x_y_0.X, x_y_0.X, DC.Colors_Count);
 
-			if (i == DC.Colors_Count)
-				color = 0;
-			else
-				color = DC.Palette_RGB[i];
+			//if (i == DC.Colors_Count)
+			//	color = 0;
+			//else
+			//	color = DC.Palette_RGB[i];
 
-			position.X = x;
-			position.Y = y;
-			buffer_color.Color = color;
+			//position.X = x;
+			//position.Y = y;
+			//buffer_color.Color = color;
 
-			Asm_Set_Pixel(video_buffer, position, buffer_color);
+			//Asm_Set_Pixel(video_buffer, position, buffer_color);
 
-			Asm_Set_Mandelbrot_Point(video_buffer, x_0, y_0, DC.Colors_Count, DC.Palette_RGB);
+			Asm_Set_Mandelbrot_Point(video_buffer, x_y_0, DC.Palette_RGB, DC.Colors_Count);
 		}
 	}
 
