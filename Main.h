@@ -86,5 +86,5 @@ extern "C" void Asm_Draw_Line(char* video_buffer, SPoint start_pos, SPoint finis
 extern "C" void Asm_Draw_Horizontal_Line(char* video_buffer, SPoint start_pos, unsigned short length, SBuf_Color buffer_color);
 extern "C" void Asm_Set_Pixel(char* video_buffer, SPoint position, SBuf_Color buffer_color);
 extern "C" int  Asm_Get_Mandelbrot_Index(char* video_buffer, double x_0, double y_0, int colors_count);
-extern "C" int  Asm_Set_Mandelbrot_Point(char* video_buffer, SPoint_Double x_y_0, int* palette_rgb, int colors_count);
+extern "C" int  Asm_Set_Mandelbrot_Point(char* video_buffer, SPoint_Double *x_y_0, int* palette_rgb, int colors_count);
 //------------------------------------------------------------------------------------------------------------
