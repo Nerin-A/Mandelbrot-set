@@ -334,7 +334,7 @@ _got_index:
 Asm_Get_Mandelbrot_Index endp
 ;-------------------------------------------------------------------------------------------------------------
 Asm_Set_Mandelbrot_Point proc
-; extern "C" int  Asm_Set_Mandelbrot_Point(char* video_buffer, SPoint_Double x_y_0, int* palette_rgb, int colors_count);
+; extern "C" int  Asm_Set_Mandelbrot_Point(char* video_buffer, SPoint_Double* x_y_0, int* palette_rgb, int colors_count);
 ; Parameters
 ; RAX = video_buffer
 ; RDX = x_y_0
@@ -347,7 +347,13 @@ Asm_Set_Mandelbrot_Point proc
 	mov rax, 4
 	cvtsi2sd xmm8, rax ; XMM8 = 4.0 
 
+	mov r10, rcx ; R10 = video_buffer
+
 	mov rcx, r9 ; RCX = colors_count = iterations count
+
+	movupd xmm1, [ rdx ] ; XMM1 = x_0
+	movupd xmm2, [ rdx + 8 ] ; XMM1 = y_0
+
 ;	x_n = 0.0;
 ;	y_n = 0.0;
 	xorpd xmm3, xmm3 ; XMM3 = x_n = 0.0
