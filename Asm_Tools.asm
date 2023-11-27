@@ -438,8 +438,7 @@ Asm_Set_Mandelbrot_2_Points proc
 ; Parameters
 ; RAX = video_buffer
 ; RDX = packed_x_y
-; R8 = palette_rgb
-; R9 = colors_count
+; R8 = palette_rgb./
 ; Return = EAX;
 
 	push rcx
@@ -449,12 +448,16 @@ Asm_Set_Mandelbrot_2_Points proc
 	mov rax, 4
 	cvtsi2sd xmm8, rax ; XMM8 = 4.0 
 
+	pshufd xmm8, xmm8, 01000100b ; XMM8 = { 4.0 & 4.0 }
+
 	mov r10, rcx ; R10 = video_buffer
 
 	mov rcx, r9 ; RCX = colors_count = iterations count
 
-	movupd xmm1, [ rdx ] ; XMM1 = x_0
-	movupd xmm2, [ rdx + 8 ] ; XMM1 = y_0
+	movupd xmm2, [ rdx ] ; XMM1 = y_0
+	pshufd xmm2, xmm2, 01000100b ; XMM2 = { y_0 & y_0 }
+
+	movupd xmm1, [ rdx + 8 ] ; XMM1 = { x0_0 & x1_0 }
 
 ;	x_n = 0.0;
 ;	y_n = 0.0;
