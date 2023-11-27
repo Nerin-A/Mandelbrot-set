@@ -634,7 +634,8 @@ void Draw_Mandelbrot_Asm(HDC frame_dc)
 {
 	int x, y;
 	double x_scale = (double)DC.Buf_Size.Width / (double)DC.Buf_Size.Height * Global_Scale;
-	SPoint_Double x_y_0;
+	//SPoint_Double x_y_0;
+	SPacked_X_Y packed_x_y;
 	SBuf_Color buffer_color;
 	char* video_buffer;
 	char* current_video_buffer;
@@ -648,15 +649,18 @@ void Draw_Mandelbrot_Asm(HDC frame_dc)
 
 	start_cpu_tick = __rdtsc();
 
-	for (y = 0; y < DC.Buf_Size.Height; ++y)
+	for (y = 0; y < DC.Buf_Size.Height; y+=2)
 	{
-		x_y_0.Y = (double)y / (double)DC.Buf_Size.Height - 0.5; // y_0 = [-0.5 ... 0.5)
-		x_y_0.Y = x_y_0.Y * Global_Scale + Center_Y;
+		packed_x_y.Y_0 = (double)y / (double)DC.Buf_Size.Height - 0.5; // y_0 = [-0.5 ... 0.5)
+		packed_x_y.Y_0 = packed_x_y.Y_0 * Global_Scale + Center_Y;
 
 		for (x = 0; x < DC.Buf_Size.Width; x++)
 		{
-			x_y_0.X = (double)x / (double)DC.Buf_Size.Width - 0.5; // x_0 = [-0.5 ... 0.5)
-			x_y_0.X = x_y_0.X * x_scale + Center_X;
+			packed_x_y.X0_0 = (double)x / (double)DC.Buf_Size.Width - 0.5; // x_0 = [-0.5 ... 0.5)
+			packed_x_y.X0_0 = packed_x_y.X0_0 * x_scale + Center_X;
+
+			packed_x_y.X0_1 = (double) (x + 1) / (double)DC.Buf_Size.Width - 0.5; // x_0 = [-0.5 ... 0.5)
+			packed_x_y.X0_1 = packed_x_y.X0_1 * x_scale + Center_X;
 
 			//i = Get_Mandelbrot_Index(x_0, y_0,  DC.Colors_Count);
 
@@ -691,7 +695,7 @@ void Draw_Mandelbrot_Asm(HDC frame_dc)
 
 	// DEBUG Asm 562 901 795 || 561 991 854 || 562 981 681 
 	// with new Asm_Set_Pixel function 575 260 092 || 569 660 502 || 571 467 170
-	// So with the new Asm algorhytm our programs is about 6 times faster!
+	// 
 	
 	SetPixel(frame_dc, DC.Buf_Size.Width / 2, DC.Buf_Size.Height / 2, RGB(255, 255, 255));
 }

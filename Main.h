@@ -8,9 +8,7 @@ struct SRGB
 	SRGB(unsigned char r, unsigned char g, unsigned char b)
 		: R(r), G(g), B(b)
 	{
-
 	}
-
 
 	unsigned char R, G, B;
 };
@@ -29,6 +27,12 @@ struct SPoint_Double
 	SPoint_Double(double x, double y);
 
 	double X, Y;
+};
+//------------------------------------------------------------------------------------------------------------
+struct SPacked_X_Y
+{
+	double Y_0;
+	double X0_0, X0_1; // SIMD packet
 };
 //------------------------------------------------------------------------------------------------------------
 struct SSize
