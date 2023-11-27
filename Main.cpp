@@ -677,9 +677,11 @@ void Draw_Mandelbrot_Asm(HDC frame_dc)
 
 			//Asm_Set_Pixel(video_buffer, position, buffer_color);
 
-			Asm_Set_Mandelbrot_Point(current_video_buffer, &x_y_0, DC.Palette_RGB, DC.Colors_Count);
+			//Asm_Set_Mandelbrot_Point(current_video_buffer, &x_y_0, DC.Palette_RGB, DC.Colors_Count);
 
-			current_video_buffer += 4;
+			Asm_Set_Mandelbrot_2_Points(current_video_buffer, &packed_x_y, DC.Palette_RGB, DC.Colors_Count);
+
+			current_video_buffer += 4 * 2;
 		}
 	}
 

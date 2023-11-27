@@ -433,4 +433,104 @@ _got_index:
 
 Asm_Set_Mandelbrot_Point endp
 ;-------------------------------------------------------------------------------------------------------------
+Asm_Set_Mandelbrot_2_Points proc
+; extern "C" int  Asm_Set_Mandelbrot_2_Points(char* video_buffer, SPacked_X_Y* packed_x_y, int* palette_rgb, int colors_count);
+; Parameters
+; RAX = video_buffer
+; RDX = packed_x_y
+; R8 = palette_rgb
+; R9 = colors_count
+; Return = EAX;
+
+	push rcx
+	push rbx
+	push r10
+
+	mov rax, 4
+	cvtsi2sd xmm8, rax ; XMM8 = 4.0 
+
+	mov r10, rcx ; R10 = video_buffer
+
+	mov rcx, r9 ; RCX = colors_count = iterations count
+
+	movupd xmm1, [ rdx ] ; XMM1 = x_0
+	movupd xmm2, [ rdx + 8 ] ; XMM1 = y_0
+
+;	x_n = 0.0;
+;	y_n = 0.0;
+	xorpd xmm3, xmm3 ; XMM3 = x_n = 0.0
+	xorpd xmm4, xmm4 ; XMM4 = y_n = 0.0
+
+
+_iteration_start:
+;	for (i = 0; i < colors_count; i++)
+;	{
+;		x_n1 = x_n * x_n - y_n * y_n + x_0;
+	movapd xmm5, xmm3 ; XMM5 = XMM3 = x_n
+	movapd xmm6, xmm4 ; XMM6 = XMM4 = y_n
+
+	mulsd xmm5, xmm5 ; XMM5 = x_n * x_n
+	mulsd xmm6, xmm6 ; XMM6 = y_n * y_n
+
+	subsd xmm5, xmm6 ; XMM5 = x_n * x_n - y_n * y_n
+
+	addsd xmm5, xmm1 ; XMM5 = x_n * x_n - y_n * y_n + x_0 = x_n1
+
+;		y_n1 = 2.0 * x_n * y_n + y_0;
+	movaps xmm7, xmm3 ; XMM7 = x_n; 
+	mulsd xmm7, xmm4 ; XMM7 = x_n * y_n
+	addsd xmm7, xmm7 ; XMM7 = 2.0 * x_n * y_n
+	addsd xmm7, xmm2 ; XMM7 = 2.0 * x_n * y_n + y_0 = y_n1
+;
+;		distance = x_n1 * x_n1 + y_n1 * y_n1;
+
+	movaps xmm6, xmm5 ; XMM6 = x_n1
+	mulsd xmm6, xmm6 ; XMM6 = x_n1 * x_n1	
+	
+	movaps xmm0, xmm7 ; XMM7 = y_n1
+	mulsd xmm0, xmm0 ; XMM0 = y_n1 * y_n1
+
+	addsd xmm0, xmm6 ; XMM0 = distance = x_n1 * x_n1 + y_n1 * y_n1;
+
+;
+;		if (distance > 4.0)
+;			break;
+
+	cmpnlesd xmm0, xmm8 ; XMM0 > 4.0 ?
+
+	movmskpd eax, xmm0
+
+	bt eax, 0
+	jc _got_index
+
+;		x_n = x_n1;
+;		y_n = y_n1;
+	movaps xmm3, xmm5 ; XMM3 = x_n = x_n1
+	movaps xmm4, xmm7 ; XMM4 = y_n = y_n1;
+	
+;	}
+	loop _iteration_start
+
+_got_index:
+	mov rbx, r9
+	sub rbx, rcx ; RBX = EBX = colors_count - ciybt = color_index = iteration at which the loop was interrupted
+;
+;	return i;
+	; if RCX == 0, selecting black color (0), otherwise - a color from the palette
+
+	xor eax, eax ; EAX = 0 if color == black, also we don't have to compare it with 0 constant
+	cmp ecx, eax
+
+	cmovne eax, [ r8 + rbx * 4] ; EAX = palette_rgb[color_index]
+
+	mov [ r10 ], eax ; Saving a pixel
+
+	pop r10
+	pop rbx
+	pop rcx
+
+	ret
+
+Asm_Set_Mandelbrot_2_Points endp
+;-------------------------------------------------------------------------------------------------------------
 end
