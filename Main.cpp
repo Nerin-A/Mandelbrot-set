@@ -637,9 +637,11 @@ void Draw_Mandelbrot_Asm(HDC frame_dc)
 	SPoint_Double x_y_0;
 	SBuf_Color buffer_color;
 	char* video_buffer;
+	char* current_video_buffer;
 	SPoint position;
 	
 	video_buffer = DC.Get_Buf();
+	current_video_buffer = video_buffer;
 	buffer_color.Buffer_Size = DC.Buf_Size;
 
 	unsigned long long start_cpu_tick, end_cpu_tick, cpu_ticks;
@@ -671,7 +673,9 @@ void Draw_Mandelbrot_Asm(HDC frame_dc)
 
 			//Asm_Set_Pixel(video_buffer, position, buffer_color);
 
-			Asm_Set_Mandelbrot_Point(video_buffer, &x_y_0, DC.Palette_RGB, DC.Colors_Count);
+			Asm_Set_Mandelbrot_Point(current_video_buffer, &x_y_0, DC.Palette_RGB, DC.Colors_Count);
+
+			current_video_buffer += 4;
 		}
 	}
 

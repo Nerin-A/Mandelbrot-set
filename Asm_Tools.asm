@@ -343,6 +343,8 @@ Asm_Set_Mandelbrot_Point proc
 ; Return = EAX;
 
 	push rcx
+	push rbx
+	push r10
 
 	mov rax, 4
 	cvtsi2sd xmm8, rax ; XMM8 = 4.0 
@@ -410,11 +412,21 @@ _iteration_start:
 	loop _iteration_start
 
 _got_index:
-	mov rax, r9
-	sub rax, rcx ; RAX = EAX = colors_count - ciybt = color_index = iteration at which the loop was interrupted
+	mov rbx, r9
+	sub rbx, rcx ; RBX = EBX = colors_count - ciybt = color_index = iteration at which the loop was interrupted
 ;
 ;	return i;
+	; if RCX == 0, selecting black color (0), otherwise - a color from the palette
 
+	xor eax, eax ; EAX = 0 if color == black, also we don't have to compare it with 0 constant
+	cmp ecx, eax
+
+	cmovne eax, [ r8 + rbx * 4] ; EAX = palette_rgb[color_index]
+
+	mov [ r10 ], eax ; Saving a pixel
+
+	pop r10
+	pop rbx
 	pop rcx
 
 	ret
