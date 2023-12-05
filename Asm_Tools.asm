@@ -445,6 +445,8 @@ Asm_Set_Mandelbrot_2_Points proc
 	push rbx
 	push r10
 
+	mov r11, 11b ; R11[1...0] - bitmask of values for which the index has already been calculated (0/1 - calculated/not yet calculated)
+
 	mov rax, 4
 	cvtsi2sd xmm8, rax ; XMM8 = 4.0 
 
@@ -503,15 +505,36 @@ _iteration_start:
 ;		if (distance > 4.0)
 ;			break;
 
-	cmpnlesd xmm0, xmm8 ; XMM0 > 4.0 ?
+	cmpnlepd xmm0, xmm8 ; XMM0 > 4.0 ?
 
 	movmskpd eax, xmm0
+	and rax,  r11  ;  We apply the mask, resetting to zero the bits for which the index has already been calculated
 
-	bt eax, 0
-	jc _got_index
+	cmp rax, 0
+	jne _check_bits
+
+
+	; bt eax, 0
+	; jc _got_index
 	
 ;	}
-	loop _iteration_start
+	loop _iteration_start ; There are no new indexes - we continue to iterate
+	; We'll get here when all the iterations are over, in RAX the result of the last comparison
+	; To this result we need to apply the result accumulated in the mask
+
+	or rax, r11 ; We forcefully mark the remaining bits as those for which we need to calculate the index.
+
+_check_bits:
+	xor edx, edx ; Checking EAX starting with zero bit
+
+_check_one_bit:
+	bt eax, edx
+	jnc _check_next_value ;  Going to the next bit if current ==  0
+
+_check_next_value:
+	inc edx
+	cmp edx,  2
+	jl _check_one_bit
 
 _got_index:
 	mov rbx, r9
