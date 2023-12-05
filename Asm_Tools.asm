@@ -461,41 +461,45 @@ Asm_Set_Mandelbrot_2_Points proc
 
 ;	x_n = 0.0;
 ;	y_n = 0.0;
-	xorpd xmm3, xmm3 ; XMM3 = x_n = 0.0
-	xorpd xmm4, xmm4 ; XMM4 = y_n = 0.0
+	xorpd xmm3, xmm3 ; XMM3 = { x1_n, x2_n } = { 0.0, 0.0 }
+	xorpd xmm4, xmm4 ; XMM4 = { y1_n, y2_n } = { 0.0, 0.0 }
 
 
 _iteration_start:
 ;	for (i = 0; i < colors_count; i++)
 ;	{
 ;		x_n1 = x_n * x_n - y_n * y_n + x_0;
-	movapd xmm5, xmm3 ; XMM5 = XMM3 = x_n
-	movapd xmm6, xmm4 ; XMM6 = XMM4 = y_n
+	movapd xmm5, xmm3 ; XMM5 = XMM3 = { x1_n, x2_n }
+	movapd xmm6, xmm4 ; XMM6 = XMM4 = { y1_n, y2_n }
 
-	mulsd xmm5, xmm5 ; XMM5 = x_n * x_n
-	mulsd xmm6, xmm6 ; XMM6 = y_n * y_n
+	mulpd xmm5, xmm5 ; XMM5 = { x1_n * x1_n, x2_n * x2_n }
+	mulpd xmm6, xmm6 ; XMM6 = { y1_n * y1_n, y2_n * y2_n }
 
-	subsd xmm5, xmm6 ; XMM5 = x_n * x_n - y_n * y_n
+	subpd xmm5, xmm6 ; XMM5 = { x1_n * x1_n - y1_n * y1_n, x2_n * x2_n - y2_n * y2_n }
 
-	addsd xmm5, xmm1 ; XMM5 = x_n * x_n - y_n * y_n + x_0 = x_n1
+	addpd xmm5, xmm1 ; XMM5 = { x1_n1, x2_n1 }
 
 ;		y_n1 = 2.0 * x_n * y_n + y_0;
-	movaps xmm7, xmm3 ; XMM7 = x_n; 
-	mulsd xmm7, xmm4 ; XMM7 = x_n * y_n
-	addsd xmm7, xmm7 ; XMM7 = 2.0 * x_n * y_n
-	addsd xmm7, xmm2 ; XMM7 = 2.0 * x_n * y_n + y_0 = y_n1
+	movaps xmm7, xmm3 ; XMM7 = { x1_n, x2_n } 
+	mulpd xmm7, xmm4 ; XMM7 = { x1_n * y1_n, x2_n * y2_n }
+	addpd xmm7, xmm7 ; XMM7 = { 2.0 * x1_n * y1_n, 2.0 * x2_n * y2_n }
+	addpd xmm7, xmm2 ; XMM7 = { 2.0 * x1_n * y1_n + y1_0 = y1_n1, 2.0 * x2_n * y2_n + y2_0 = y2_n1 }
 ;
 ;		distance = x_n1 * x_n1 + y_n1 * y_n1;
 
-	movaps xmm6, xmm5 ; XMM6 = x_n1
-	mulsd xmm6, xmm6 ; XMM6 = x_n1 * x_n1	
+	movaps xmm6, xmm5 ; XMM6 = { x1_n1,x2_n2 }
+	mulpd xmm6, xmm6 ; XMM6 = { x1_n1 * x1_n1, x2_n1 * x2_n1 }	
 	
-	movaps xmm0, xmm7 ; XMM7 = y_n1
-	mulsd xmm0, xmm0 ; XMM0 = y_n1 * y_n1
+	movaps xmm0, xmm7 ; XMM7 = { y1_n1, y2_n1 }
+	mulpd xmm0, xmm0 ; XMM0 = { y1_n1 * y1_n1, y2_n1 * y2_n1 }
 
-	addsd xmm0, xmm6 ; XMM0 = distance = x_n1 * x_n1 + y_n1 * y_n1;
+	addpd xmm0, xmm6 ; XMM0 = distance = { x1_n1 * x1_n1 + y1_n1 * y1_n1, x2_n1 * x2_n1 + y2_n1 * y2_n1 }
 
-;
+;		x_n = x_n1;
+;		y_n = y_n1;
+	movaps xmm3, xmm5 ; XMM3 = x_n = x_n1
+	movaps xmm4, xmm7 ; XMM4 = y_n = y_n1;
+
 ;		if (distance > 4.0)
 ;			break;
 
@@ -505,11 +509,6 @@ _iteration_start:
 
 	bt eax, 0
 	jc _got_index
-
-;		x_n = x_n1;
-;		y_n = y_n1;
-	movaps xmm3, xmm5 ; XMM3 = x_n = x_n1
-	movaps xmm4, xmm7 ; XMM4 = y_n = y_n1;
 	
 ;	}
 	loop _iteration_start
