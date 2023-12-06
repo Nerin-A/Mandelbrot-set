@@ -441,9 +441,11 @@ Asm_Set_Mandelbrot_2_Points proc
 ; R8 = palette_rgb./
 ; Return = EAX;
 
-	push rcx
 	push rbx
+	push rcx
 	push r10
+	push r11
+	push r12
 
 	mov r11, 11b ; R11[1...0] - bitmask of values for which the index has already been calculated (0/1 - calculated/not yet calculated)
 
@@ -519,8 +521,7 @@ _iteration_start:
 	
 ;	}
 
-	cmp r11d, 0
-	loopne _iteration_start ; There are no new indexes - we continue to iterate
+	loop _iteration_start ; There are no new indexes - we continue to iterate
 	; We'll get here when all the iterations are over, in RAX the result of the last comparison
 	; To this result we need to apply the result accumulated in the mask
 
@@ -552,23 +553,21 @@ _check_next_value:
 	cmp edx,  2
 	jl _check_one_bit ; keep checking bits [1...0]
 
-_got_index:
-	mov rbx, r9
-	sub rbx, rcx ; RBX = EBX = colors_count - ciybt = color_index = iteration at which the loop was interrupted
-;
-;	return i;
-	; if RCX == 0, selecting black color (0), otherwise - a color from the palette
+	cmp r11d, 0
 
-	xor eax, eax ; EAX = 0 if color == black, also we don't have to compare it with 0 constant
-	cmp ecx, eax
+	je _exit
 
-	cmovne eax, [ r8 + rbx * 4] ; EAX = palette_rgb[color_index]
+	dec rcx
 
-	mov [ r10 ], eax ; Saving a pixel
+	cmp rcx, 0
+	jg _iteration_start ; Not all indexes accounted
 
+_exit:
+	pop r12
+	pop r11
 	pop r10
-	pop rbx
 	pop rcx
+	pop rbx
 
 	ret
 
