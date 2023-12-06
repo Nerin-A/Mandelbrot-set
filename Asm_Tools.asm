@@ -518,7 +518,9 @@ _iteration_start:
 	; jc _got_index
 	
 ;	}
-	loop _iteration_start ; There are no new indexes - we continue to iterate
+
+	cmp r11d, 0
+	loopne _iteration_start ; There are no new indexes - we continue to iterate
 	; We'll get here when all the iterations are over, in RAX the result of the last comparison
 	; To this result we need to apply the result accumulated in the mask
 
@@ -531,10 +533,24 @@ _check_one_bit:
 	bt eax, edx
 	jnc _check_next_value ;  Going to the next bit if current ==  0
 
+	mov r12, r9
+	sub r12, rcx ; R12 = colors_count - ciybt = color_index = iteration at which the loop was interrupted
+
+	; if RCX == 0, selecting black color (0), otherwise - a color from the palette
+
+	xor ebx, ebx ; EBX = 0 if color == black, also we don't have to compare it with 0 constant
+	cmp ecx, ebx
+
+	cmovne ebx, [ r8 + r12 * 4] ; EBX = palette_rgb[color_index]
+
+	mov [ r10 + rdx * 4], ebx ; Saving a pixel
+
+	btr r11d, edx ; Let's reset the mask bit so we don't check this index anymore.
+
 _check_next_value:
 	inc edx
 	cmp edx,  2
-	jl _check_one_bit
+	jl _check_one_bit ; keep checking bits [1...0]
 
 _got_index:
 	mov rbx, r9
