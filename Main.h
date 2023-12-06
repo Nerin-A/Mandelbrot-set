@@ -29,6 +29,15 @@ struct SPoint_Double
 	double X, Y;
 };
 //------------------------------------------------------------------------------------------------------------
+struct SPacked_X_Y_4
+{
+	SPacked_X_Y_4();
+
+	// SIMD packages
+	double FF[4];
+	double X_0[4]; 
+	double Y_0[4];
+};
 struct SPacked_X_Y
 {
 	double Y_0;

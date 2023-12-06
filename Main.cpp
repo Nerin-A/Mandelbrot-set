@@ -32,6 +32,20 @@ SPoint_Double::SPoint_Double(double x, double y)
 
 
 
+// SPacked_X_Y_4
+//------------------------------------------------------------------------------------------------------------
+SPacked_X_Y_4::SPacked_X_Y_4()
+{
+	int i;
+
+	for (i = 0; i < 4; i++)
+		FF[i] = 4.0;
+}
+//------------------------------------------------------------------------------------------------------------
+
+
+
+
 // SSize
 //------------------------------------------------------------------------------------------------------------
 SSize::SSize()
@@ -632,10 +646,12 @@ int Get_Mandelbrot_Index(double x_0, double y_0, int colors_count)
 #pragma optimize("", off)
 void Draw_Mandelbrot_Asm(HDC frame_dc)
 {
+	int i;
 	int x, y;
 	double x_scale = (double)DC.Buf_Size.Width / (double)DC.Buf_Size.Height * Global_Scale;
 	//SPoint_Double x_y_0;
-	SPacked_X_Y packed_x_y;
+	//SPacked_X_Y packed_x_y;
+	SPacked_X_Y_4 packed_x_y;
 	SBuf_Color buffer_color;
 	char* video_buffer;
 	char* current_video_buffer;
@@ -651,16 +667,19 @@ void Draw_Mandelbrot_Asm(HDC frame_dc)
 
 	for (y = 0; y < DC.Buf_Size.Height; y+=2)
 	{
-		packed_x_y.Y_0 = (double)y / (double)DC.Buf_Size.Height - 0.5; // y_0 = [-0.5 ... 0.5)
-		packed_x_y.Y_0 = packed_x_y.Y_0 * Global_Scale + Center_Y;
+		packed_x_y.Y_0[0] = (double)y / (double)DC.Buf_Size.Height - 0.5; // y_0 = [-0.5 ... 0.5)
+		packed_x_y.Y_0[0] = packed_x_y.Y_0[0] * Global_Scale + Center_Y;
+
+		for (i = 1; i < 4; i++)
+			packed_x_y.Y_0[i] = packed_x_y.Y_0[0];
 
 		for (x = 0; x < DC.Buf_Size.Width; x++)
 		{
-			packed_x_y.X0_0 = (double)x / (double)DC.Buf_Size.Width - 0.5; // x_0 = [-0.5 ... 0.5)
-			packed_x_y.X0_0 = packed_x_y.X0_0 * x_scale + Center_X;
-
-			packed_x_y.X0_1 = (double) (x + 1) / (double)DC.Buf_Size.Width - 0.5; // x_0 = [-0.5 ... 0.5)
-			packed_x_y.X0_1 = packed_x_y.X0_1 * x_scale + Center_X;
+			for (i = 0; i < 4; i++)
+			{
+				packed_x_y.X_0[i] = (double)x / (double)DC.Buf_Size.Width - 0.5; // x_0 = [-0.5 ... 0.5)
+				packed_x_y.X_0[i] = packed_x_y.X_0[i] * x_scale + Center_X;
+			}
 
 			//i = Get_Mandelbrot_Index(x_0, y_0,  DC.Colors_Count);
 
@@ -679,7 +698,8 @@ void Draw_Mandelbrot_Asm(HDC frame_dc)
 
 			//Asm_Set_Mandelbrot_Point(current_video_buffer, &x_y_0, DC.Palette_RGB, DC.Colors_Count);
 
-			Asm_Set_Mandelbrot_2_Points(current_video_buffer, &packed_x_y, DC.Palette_RGB, DC.Colors_Count);
+			//Asm_Set_Mandelbrot_2_Points(current_video_buffer, &packed_x_y, DC.Palette_RGB, DC.Colors_Count);
+
 
 			current_video_buffer += 4 * 2;
 		}
