@@ -74,7 +74,7 @@ AsFrame_DC::~AsFrame_DC()
 }
 //------------------------------------------------------------------------------------------------------------
 AsFrame_DC::AsFrame_DC()
-	: DC(0), Bitmap(0), BG_Brush(0), White_Pen(0), Bitmap_Buffer(0)
+	: DC(0), Bitmap(0), BG_Brush(0), Bitmap_Buffer(0)
 {
 	BG_Brush = CreateSolidBrush(RGB(0, 0, 0));
 	White_Pen = CreatePen(PS_SOLID, 0, RGB(255, 255, 255) );
@@ -321,7 +321,7 @@ int AsFrame_DC::Color_To_RGB(int color)
 
 	h = color / 60; // h = [0 .. 5]
 
-	a = double(color % 60) / 60.0; // a = [0 .. 1.0)
+	a = (double)(color % 60) / 60.0; // a = [0 .. 1.0)
 
 	v_inc = (unsigned char)(a * 255.0);
 	v_dec = (unsigned char)((1.0 - a) * 255.0);
@@ -487,7 +487,7 @@ void Clear_Screen(HDC frame_dc)
 	char* buf;
 	SBuf_Color buffer_color;
 	SPoint start_point(0, 0);
-	SPoint finish_point(400, 500);
+	SPoint finish_point(300, 400);
 	unsigned long long start_cpu_tick, end_cpu_tick, cpu_ticks;
 
 	buf = DC.Get_Buf();
@@ -522,22 +522,23 @@ void Clear_Screen(HDC frame_dc)
 //------------------------------------------------------------------------------------------------------------
 void Draw_Line(HDC frame_dc)
 {
-	//int i;
+	int i, j;
 	//char* buf;
-	//SBuf_Color buffer_color;
-	//SPoint start_point(10, 0);
-	//SPoint finish_point(910, 100);
-	//unsigned long long start_cpu_tick, end_cpu_tick, cpu_ticks;
+	SBuf_Color buffer_color;
+	SPoint start_point(10, 0);
+	SPoint finish_point(910, 100);
+	unsigned long long start_cpu_tick, end_cpu_tick, cpu_ticks;
 
-	//SelectObject(frame_dc, DC.White_Pen);
+	SelectObject(frame_dc, DC.White_Pen);
 
-	//start_cpu_tick = __rdtsc();
+	start_cpu_tick = __rdtsc();
 
-	//for (i = 0; i < DC.Buf_Size.Height - 100; i++)
-	//{
-	//	MoveToEx(frame_dc, 10, i, 0);
-	//	LineTo(frame_dc, 910, i + 100);
-	//}
+	for (j = 0; j < 1000; j++)
+		for (i = 0; i < DC.Buf_Size.Height - 100; i++)
+		{
+			MoveToEx(frame_dc, 10, i, 0);
+			LineTo(frame_dc, 910, i + 100);
+		}
 
 	//buf = DC.Get_Buf();
 	//buffer_color.Buffer_Size = DC.Buf_Size;
@@ -550,9 +551,9 @@ void Draw_Line(HDC frame_dc)
 	//	Asm_Draw_Line(buf, start_point, finish_point, buffer_color);
 	//}
 
-	//end_cpu_tick = __rdtsc();
+	end_cpu_tick = __rdtsc();
 
-	//cpu_ticks = end_cpu_tick - start_cpu_tick; // WinAPI ->>> 3 341 304 || 3 362 976 || 3 545 604 \\\ Asm function ->>> 1 340 640 || 1 299 636 || 1 299 096. So Asm function 3x time faster!
+	cpu_ticks = end_cpu_tick - start_cpu_tick; // WinAPI ->>> 3 341 304 || 3 362 976 || 3 545 604 \\\ Asm function ->>> 1 340 640 || 1 299 636 || 1 299 096. So Asm function 3x time faster!
 }
 //------------------------------------------------------------------------------------------------------------
 void Draw_Mandelbrot(HDC frame_dc)
@@ -665,7 +666,7 @@ void Draw_Mandelbrot_Asm(HDC frame_dc)
 
 	start_cpu_tick = __rdtsc();
 
-	for (y = 0; y < DC.Buf_Size.Height; y+=2)
+	for (y = 0; y < DC.Buf_Size.Height; y++)
 	{
 		packed_x_y.Y_0[0] = (double)y / (double)DC.Buf_Size.Height - 0.5; // y_0 = [-0.5 ... 0.5)
 		packed_x_y.Y_0[0] = packed_x_y.Y_0[0] * Global_Scale + Center_Y;
@@ -673,11 +674,11 @@ void Draw_Mandelbrot_Asm(HDC frame_dc)
 		for (i = 1; i < 4; i++)
 			packed_x_y.Y_0[i] = packed_x_y.Y_0[0];
 
-		for (x = 0; x < DC.Buf_Size.Width; x++)
+		for (x = 0; x < DC.Buf_Size.Width; x+=4)
 		{
 			for (i = 0; i < 4; i++)
 			{
-				packed_x_y.X_0[i] = (double)x / (double)DC.Buf_Size.Width - 0.5; // x_0 = [-0.5 ... 0.5)
+				packed_x_y.X_0[i] = (double) (x + i) / (double)DC.Buf_Size.Width - 0.5; // x_0 = [-0.5 ... 0.5)
 				packed_x_y.X_0[i] = packed_x_y.X_0[i] * x_scale + Center_X;
 			}
 
@@ -750,7 +751,7 @@ void On_Paint(HWND hwnd)
 	//DC.Draw_Multi_Color_Palette(frame_dc);
 	//DC.Draw_Web_Palette(frame_dc);
 
-	InvalidateRect(hwnd, &ps.rcPaint, FALSE);
+	//InvalidateRect(hwnd, &ps.rcPaint, FALSE);
 
 	BitBlt(hdc, 0, 0, DC.Buf_Size.Width, DC.Buf_Size.Height, frame_dc, 0, 0, SRCCOPY);
 

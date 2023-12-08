@@ -11,7 +11,7 @@ Asm_Draw proc
 	mov rdi, rcx
 	mov eax, 0ffffffffh
 
-	mov rcx, 100
+	mov rcx, 100000
 
 	rep stosd 
 
@@ -342,8 +342,8 @@ Asm_Set_Mandelbrot_Point proc
 ; R9 = colors_count
 ; Return = EAX;
 
-	push rcx
 	push rbx
+	push rcx
 	push r10
 
 	mov rax, 4
@@ -426,8 +426,8 @@ _got_index:
 	mov [ r10 ], eax ; Saving a pixel
 
 	pop r10
-	pop rbx
 	pop rcx
+	pop rbx
 
 	ret
 
@@ -587,79 +587,77 @@ Asm_Set_Mandelbrot_4_Points proc
 	push r11
 	push r12
 
-	mov r11, 11b ; R11[1...0] - bitmask of values for which the index has already been calculated (0/1 - calculated/not yet calculated)
+	mov r11, 1111b ; R11[3...0] - bitmask of values for which the index has already been calculated (0/1 - calculated/not yet calculated)
 
-	mov rax, 4
-	cvtsi2sd xmm8, rax ; XMM8 = 4.0 
+	; mov rax, 4
+	; cvtsi2sd xmm8, rax ; XMM8 = 4.0 
+	; 
+	; pshufd xmm8, xmm8, 01000100b ; XMM8 = { 4.0 & 4.0 }
 
-	pshufd xmm8, xmm8, 01000100b ; XMM8 = { 4.0 & 4.0 }
+	vmovupd ymm8, [ rdx ] ; YMM8 = { 4.0 & 4.0 & 4.0 & 4.0 }
 
 	mov r10, rcx ; R10 = video_buffer
 
 	mov rcx, r9 ; RCX = colors_count = iterations count
 
-	movupd xmm2, [ rdx ] ; XMM1 = y_0
-	pshufd xmm2, xmm2, 01000100b ; XMM2 = { y_0 & y_0 }
+	; movupd xmm2, [ rdx ] ; XMM1 = y_0
+	; pshufd xmm2, xmm2, 01000100b ; XMM2 = { y_0 & y_0 }
 
-	movupd xmm1, [ rdx + 8 ] ; XMM1 = { x0_0 & x1_0 }
+	; movupd xmm1, [ rdx + 8 ] ; XMM1 = { x0_0 & x1_0 }
+	vmovupd ymm1, [ rdx + 8 * 4 ] ; YMM1 = { x0_0 & x1_0 & x2_0 & x3_0 }
+	vmovupd ymm2, [ rdx + 8 * 8 ] ; YMM2 = { y0_0 & y1_0 & y2_0 & y3_0 }
 
 ;	x_n = 0.0;
 ;	y_n = 0.0;
-	xorpd xmm3, xmm3 ; XMM3 = { x1_n, x2_n } = { 0.0, 0.0 }
-	xorpd xmm4, xmm4 ; XMM4 = { y1_n, y2_n } = { 0.0, 0.0 }
+	vxorpd ymm3, ymm3, ymm3 ; YMM3 = { x1_n, x2_n, x3_n, x4_n } = { 0.0, 0.0, 0.0, 0.0 }
+	vxorpd ymm4, ymm4, ymm4 ; YMM4 = { y1_n, y2_n, y3_n, y4_n } = { 0.0, 0.0, 0.0, 0.0 }
 
 
 _iteration_start:
 ;	for (i = 0; i < colors_count; i++)
 ;	{
 ;		x_n1 = x_n * x_n - y_n * y_n + x_0;
-	movapd xmm5, xmm3 ; XMM5 = XMM3 = { x1_n, x2_n }
-	movapd xmm6, xmm4 ; XMM6 = XMM4 = { y1_n, y2_n }
+	vmovapd ymm5, ymm3 ; YMM5 = YMM3 = { x1_n, x2_n, x1_n, x2_n }
+	vmovapd ymm6, ymm4 ; YMM6 = YMM4 = { y1_n, y2_n, y1_n, y2_n }
 
-	mulpd xmm5, xmm5 ; XMM5 = { x1_n * x1_n, x2_n * x2_n }
-	mulpd xmm6, xmm6 ; XMM6 = { y1_n * y1_n, y2_n * y2_n }
+	vmulpd ymm5, ymm3, ymm3 ; YMM5 = { x1_n * x1_n, x2_n * x2_n, x3_n * x3_n, x4_n * x4_n }
+	vmulpd ymm6, ymm4, ymm4 ; YMM6 = { y1_n * y1_n, y2_n * y2_n, y3_n * y3_n, y4_n * y4_n }
 
-	subpd xmm5, xmm6 ; XMM5 = { x1_n * x1_n - y1_n * y1_n, x2_n * x2_n - y2_n * y2_n }
+	vsubpd ymm5, ymm5, ymm6 ; YMM5 = { x1_n * x1_n - y1_n * y1_n, x2_n * x2_n - y2_n * y2_n, x3_n * x3_n - y3_n * y3_n, x4_n * x4_n - y4_n * y4_n }
 
-	addpd xmm5, xmm1 ; XMM5 = { x1_n1, x2_n1 }
+	vaddpd ymm5, ymm5, ymm1 ; YMM5 = { x1_n1, x2_n1, x3_n1, x4_n1 }
 
 ;		y_n1 = 2.0 * x_n * y_n + y_0;
-	movaps xmm7, xmm3 ; XMM7 = { x1_n, x2_n } 
-	mulpd xmm7, xmm4 ; XMM7 = { x1_n * y1_n, x2_n * y2_n }
-	addpd xmm7, xmm7 ; XMM7 = { 2.0 * x1_n * y1_n, 2.0 * x2_n * y2_n }
-	addpd xmm7, xmm2 ; XMM7 = { 2.0 * x1_n * y1_n + y1_0 = y1_n1, 2.0 * x2_n * y2_n + y2_0 = y2_n1 }
+	; movaps xmm7, xmm3 ; XMM7 = { x1_n, x2_n } 
+	vmulpd ymm7, ymm4, ymm3 ; YMM7 = { x1_n * y1_n, x2_n * y2_n, x3_n * y3_n, x4_n * y4_n }
+	vaddpd ymm7, ymm7, ymm7 ; YMM7 = { 2.0 * x1_n * y1_n, 2.0 * x2_n * y2_n, 2.0 * x3_n * y3_n, 2.0 * x4_n * y4_n }
+	vaddpd ymm7,ymm7, ymm2 ; YMM7 = { y1_n1, y2_n1, y3_n1, y4_n1 }
 ;
 ;		distance = x_n1 * x_n1 + y_n1 * y_n1;
 
-	movaps xmm6, xmm5 ; XMM6 = { x1_n1,x2_n2 }
-	mulpd xmm6, xmm6 ; XMM6 = { x1_n1 * x1_n1, x2_n1 * x2_n1 }	
+	;movaps xmm6, xmm5 ; XMM6 = { x1_n1,x2_n2 }
+	vmulpd ymm6, ymm5, ymm5 ; YMM6 = { x1_n1 * x1_n1, x2_n1 * x2_n1, x3_n1 * x3_n1, x4_n1 * x4_n1 }	
 	
-	movaps xmm0, xmm7 ; XMM7 = { y1_n1, y2_n1 }
-	mulpd xmm0, xmm0 ; XMM0 = { y1_n1 * y1_n1, y2_n1 * y2_n1 }
+	; movaps xmm0, xmm7 ; XMM7 = { y1_n1, y2_n1 }
+	vmulpd ymm0, ymm7, ymm7 ; YMM0 = { y1_n1 * y1_n1, y2_n1 * y2_n1, y3_n1 * y3_n1, y4_n1 * y4_n1 }
 
-	addpd xmm0, xmm6 ; XMM0 = distance = { x1_n1 * x1_n1 + y1_n1 * y1_n1, x2_n1 * x2_n1 + y2_n1 * y2_n1 }
+	vaddpd ymm0, ymm0, ymm6 ; YMM0 = { distance_1... distance_4 }
 
 ;		x_n = x_n1;
 ;		y_n = y_n1;
-	movaps xmm3, xmm5 ; XMM3 = x_n = x_n1
-	movaps xmm4, xmm7 ; XMM4 = y_n = y_n1;
+	vmovaps ymm3, ymm5 ; YMM3 = x_n = x_n1
+	vmovaps ymm4, ymm7 ; YMM4 = y_n = y_n1;
 
 ;		if (distance > 4.0)
 ;			break;
 
-	cmpnlepd xmm0, xmm8 ; XMM0 > 4.0 ?
+	vcmpnlepd ymm0,ymm0, ymm8 ; YMM0 > 4.0 ?
 
-	movmskpd eax, xmm0
+	vmovmskpd eax, ymm0
 	and rax,  r11  ;  We apply the mask, resetting to zero the bits for which the index has already been calculated
 
 	cmp rax, 0
 	jne _check_bits
-
-
-	; bt eax, 0
-	; jc _got_index
-	
-;	}
 
 	loop _iteration_start ; There are no new indexes - we continue to iterate
 	; We'll get here when all the iterations are over, in RAX the result of the last comparison
@@ -690,8 +688,8 @@ _check_one_bit:
 
 _check_next_value:
 	inc edx
-	cmp edx,  2
-	jl _check_one_bit ; keep checking bits [1...0]
+	cmp edx,  4
+	jl _check_one_bit ; keep checking bits [3...0]
 
 	cmp r11d, 0
 
